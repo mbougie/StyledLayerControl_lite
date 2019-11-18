@@ -282,8 +282,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 
 
-        console.log('obj.overlay', obj.overlay)
-        ////add check boxes to object
+        
+        ////final div object that you interact with //////////////////////////////////
         if (obj.overlay) {
             console.log(id)
             input = document.createElement('input');
@@ -328,6 +328,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         var groupContainer = this._domGroups[obj.group.id];
 
+
+        //////start adding events to the html objects in this code below ?????????????????????
         if (!groupContainer) {
             console.log('pre interaction method (I think)')
 
@@ -355,67 +357,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             groupContainer.innerHTML = inputElement + inputLabel;
             groupContainer.appendChild(article);
 
-            // Link to toggle all layers  
-            if (obj.overlay && this.options.group_togglers.show) {
-
-                // Toggler container
-                var togglerContainer = L.DomUtil.create('div', 'group-toggle-container', groupContainer);
-
-                // Link All
-                var linkAll = L.DomUtil.create('a', 'group-toggle-all', togglerContainer);
-                linkAll.href = '#';
-                linkAll.title = this.options.group_togglers.labelAll;
-                linkAll.innerHTML = this.options.group_togglers.labelAll;
-                linkAll.setAttribute("data-group-name", obj.group.name);
-
-                if (L.Browser.touch) {
-                    L.DomEvent
-                        .on(linkAll, 'click', L.DomEvent.stop)
-                        .on(linkAll, 'click', this._onSelectGroup, this);
-                } else {
-                    L.DomEvent
-                        .on(linkAll, 'click', L.DomEvent.stop)
-                        .on(linkAll, 'focus', this._onSelectGroup, this);
-                }
-
-                // Separator
-                var separator = L.DomUtil.create('span', 'group-toggle-divider', togglerContainer);
-                separator.innerHTML = ' / ';
-
-                // Link none
-                var linkNone = L.DomUtil.create('a', 'group-toggle-none', togglerContainer);
-                linkNone.href = '#';
-                linkNone.title = this.options.group_togglers.labelNone;
-                linkNone.innerHTML = this.options.group_togglers.labelNone;
-                linkNone.setAttribute("data-group-name", obj.group.name);
-
-                if (L.Browser.touch) {
-                    L.DomEvent
-                        .on(linkNone, 'click', L.DomEvent.stop)
-                        .on(linkNone, 'click', this._onUnSelectGroup, this);
-                } else {
-                    L.DomEvent
-                        .on(linkNone, 'click', L.DomEvent.stop)
-                        .on(linkNone, 'focus', this._onUnSelectGroup, this);
-                }
-
-                if (obj.overlay && this.options.group_togglers.show && obj.group.removable) {
-                    // Separator
-                    var separator = L.DomUtil.create('span', 'group-toggle-divider', togglerContainer);
-                    separator.innerHTML = ' / ';
-                }
-
-                if (obj.group.removable) {
-                    // Link delete group
-                    var linkRemove = L.DomUtil.create('a', 'group-toggle-none', togglerContainer);
-                    linkRemove.href = '#';
-                    linkRemove.title = this.options.groupDeleteLabel;
-                    linkRemove.innerHTML = this.options.groupDeleteLabel;
-                    linkRemove.setAttribute("data-group-name", obj.group.name);
-
-                }
-
-            }
+            
 
             container.appendChild(groupContainer);
 
