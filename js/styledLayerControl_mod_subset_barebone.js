@@ -11,8 +11,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     // You already know controls - the zoom control in the top left corner, the scale at the bottom left, the layer switcher at the top right. At their core, an L.Control is an HTML Element that is at a static position in the map container.
 
     // To make a control, simply inherit from L.Control and implement onAdd() and onRemove(). These methods work in a similar way to their L.Layer counterparts (they run whenever the control is added to or removed from the map), except that onAdd() must return an instance of HTMLElement representing the control. Adding the element to the map is done automatically, and so is removing it.
-
-
+    
+    ///Note: within this extend function need to stay in the bounds of the 3 functions inside it's sub-functions (cant do console.log outside of functions!)
 
     options: {
         collapsed: false,
@@ -27,57 +27,76 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         groupDeleteLabel: 'Delete the group'
     },
 
-    //// ---- this is in the leaflet Class section
- 
-    ///// WHat is html structure after initialization????
 
-    ///// location where you start using "this" alot
-    ///// *********   this keyword refers to an object    ********************
-    /////The JavaScript this keyword refers to the object it belongs to.
-
-    //// take in the arrays form user input in the script.js and assigns to a "this" object
     initialize: function(baseLayers, overlays, options) {
+        //////////////////////////////////////////////////
+        ////Create the 'this' object
+        /////////////////////////////////////////////////////
+
+
+        ////calls one private function
+
+
+        //// take in the arrays form user input in the script.js and assigns to a "this" object
+        /////////////is the "this" object empty initially
+        //////////// in this section initialize the this object and append key/value pairs to it??
+        console.log('______________________start____________________________________________', this)
+        console.log("############## initialize #######################################")
         var i,j;
         L.Util.setOptions(this, options);
-
         this._layerControlInputs = [];
         this._layers = [];
+        // console.log('dssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', this._layers)
         this._lastZIndex = 0;
         this._handlingClick = false;
         this._groupList = [];
         this._domGroups = [];
 
         for (i in baseLayers) {
+            ///for each layer in baselayer get 
+            console.log('i---------------',i)
+            console.log('baseLayers[i].layers', baseLayers[i].layers)
             for (var j in baseLayers[i].layers) {
-                console.log('this---baseLayers', this)
+                console.log('this------------baseLayers-----------------------------', this)
+                console.log('j-----------',j)
+                console.log('baseLayers[i]-----------',baseLayers[i])   ///// this is the object sent from script.js
+                console.log('baseLayers[i].layers[j]-----------',baseLayers[i].layers[j])
+                
+
 
                 ////_addLayer: function(layer, name, group, overlay)
                 //// if false attach a radiobutton to div
-                this._addLayer(baseLayers[i].layers[j], j, baseLayers[i], false);
+                this._addLayerToObject(baseLayers[i].layers[j], j, baseLayers[i], false);
             }
         }
 
         for (i in overlays) {
+            console.log('i--------- overlays ------',i)
             for (var j in overlays[i].layers) {
-                console.log('this----overlays', this)
+                console.log('this------------overlays---------------------------', this)
+                console.log('j------ overlays -----',j)
 
                 ////_addLayer: function(layer, name, group, overlay)
                 //// if true attach a checkbox to div
-                this._addLayer(overlays[i].layers[j], j, overlays[i], true);
+                this._addLayerToObject(overlays[i].layers[j], j, overlays[i], true);
             }
         }
 
+        console.log('_________________________end______________________________________', this)
 
     },
 
 
-    //// ---- this is in the leaflet Control section
-    ///Extension methods ---- Every control should extend from L.Control and (re-)implement the following methods.
-    ////Should return the container DOM element for the control and add listeners on relevant map events. Called on control.addTo(map).
-    //// this method returns an HTMLElement.
 
-    ///Note: this function calls the private functions!!!
     onAdd: function() {
+
+        ///Extension methods ---- Every control should extend from L.Control and (re-)implement the following methods.
+        ////Should return the container DOM element for the control and add listeners on relevant map events. Called on control.addTo(map).
+        //// this method returns an HTMLElement.
+
+        console.log("############## onAdd #######################################")
+
+        console.log('this *******************************>>>>>>>>>>>>>>>>>>>>>>>>>>   overlays', this)
         
         ////this function creates the div elemets and attach class/id to the div
         this._initLayout();
@@ -93,62 +112,27 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     },
 
     onRemove: function(map) {
-        map
-            .off('layeradd', this._onLayerChange)
-            .off('layerremove', this._onLayerChange);
+        console.log("############## onRemove #######################################")
+        // map
+        //     .off('layeradd', this._onLayerChange)
+        //     .off('layerremove', this._onLayerChange);
     },
 
 
-///////////////////////////////////////////////////
-//// important function  (funt_1 )///////////////////////////
-///////////////////////////////////////////////////
-
-    _initLayout: function() {
-        ////questions:
-        /// 1) -why have to use "this" in this function?
-        
-        /////this creates the element arrangement (could do this html as well???)
-        ////////// used the DomUtil.create Utility function to work with the DOM tree.  <----- could also use document.createElement() as well
-        ///-----Creates an HTML element with tagName, sets its class to className, and optionally appends it to container element.  
-
-        //// ------------   FORM   --------------------------------
-        ////create a form element
-        var form = this._form = L.DomUtil.create('form');
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////  PRIVATE FUNCTIONS  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-        
-        //// ------------   SECTION    --------------------------------
-        ////create section element and append it to a form that is then added to the map div using the leaflet method
-        // var section = document.createElement('section');   <------------this does the same as the line below
-        var section = L.DomUtil.create('section');
-        // attach classname to element
-        section.className = 'ac-container ' + className + '-list';
-
-        ///append form to section
-        section.appendChild(form);
+    _addLayerToObject: function(layer, name, group, overlay) {
+        ////this function is referenced from the initialize: function(baseLayers, overlays, options)
+        ////build all the layer object in here and label and attach key value to them to destinguish what group they are in
 
 
-        //// ------------   CONTAINER    --------------------------------
-        //////Create the box that holds the panels and add it to the map div using the leaflet method
-        var className = 'leaflet-control-layers',
-        container = this._container = L.DomUtil.create('div', className);
-
-        console.log('this:', this)
-        console.log('this._container:-------------------------------------------------------------------------------', this._container)
-
-
-        this._baseLayersList = L.DomUtil.create('div', className + '-base', form);
-        this._overlaysList = L.DomUtil.create('div', className + '-overlays', form);
-
-        ///append section to container
-        container.appendChild(section);
-    },
-
-    _addLayer: function(layer, name, group, overlay) {
-        ////build all the layer in here and label and attach key value to them to destinguish what group they are in
-
+        ////Returns the unique ID of an object, assigning it one if it doesn't have it.
         var id = L.Util.stamp(layer);
 
+        //// add key/values to layer object in the this object
         this._layers[id] = {
             layer: layer,
             name: name,
@@ -158,8 +142,11 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         console.log('this._layers', this._layers)
         console.log('this._layers[id]', this._layers[id])
 
+
+        ///////////////// not sure what the rest of this coe is???????????????????
         if (group) {
             var groupId = this._groupList.indexOf(group);
+            console.log('groupId----pppp', groupId)
 
             // if not find the group search for the name
             if (groupId === -1) {
@@ -189,16 +176,74 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         }
     },
 
+
+    _initLayout: function() {
+        //////////////////////////////////////////////////////
+        ////creates the _container/_section/_form
+        /////////////////////////////////////////////////////
+
+        console.log('_initLayout -----------9999999999999999999999999999999999999999999999999999this-----------------', this)
+
+
+        ////questions:
+        /// 1) -why have to use "this" in this function?
+        
+        /////this creates the element arrangement (could do this html as well???)
+        ////////// used the DomUtil.create Utility function to work with the DOM tree.  <----- could also use document.createElement() as well
+        ///-----Creates an HTML element with tagName, sets its class to className, and optionally appends it to container element.  
+
+        //// ------------   FORM   --------------------------------
+        ////append a from element to the "this" object
+        var form = this._form = L.DomUtil.create('form');
+
+
+        
+        //// ------------   SECTION    --------------------------------
+        ////create section element and append form to it then added to the map div using the leaflet method
+        // var section = document.createElement('section');   <------------this does the same as the line below
+        var section = L.DomUtil.create('section');
+        // attach classname to element
+        section.className = 'ac-container ' + className + '-list';
+
+        ///append form to section
+        section.appendChild(form);
+
+
+        //// ------------   CONTAINER    --------------------------------
+        //////Create the box that holds the panels and add it to the map div using the leaflet method
+        var className = 'leaflet-control-layers',
+        container = this._container = L.DomUtil.create('div', className);
+
+        console.log('this:', this)
+        console.log('this._container:-------------------------------------------------------------------------------', this._container)
+
+
+        this._baseLayersList = L.DomUtil.create('div', className + '-base', form);
+        this._overlaysList = L.DomUtil.create('div', className + '-overlays', form);
+
+        ///append section to container
+        container.appendChild(section);
+    },
+
+
+
     _update: function() {
         if (!this._container) {
             return;
         }
 
-        this._baseLayersList.innerHTML = '';
-        this._overlaysList.innerHTML = '';
 
-        this._domGroups.length = 0;
+        ///////////why have this????
+        // this._baseLayersList.innerHTML = '';
+        // this._overlaysList.innerHTML = '';
 
+
+        ///////////why have this????
+        // this._domGroups.length = 0;
+
+
+
+        ///////create an empty 
         this._layerControlInputs = [];
 
         var baseLayersPresent = false,
@@ -208,8 +253,9 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         for (i in this._layers) {
             obj = this._layers[i]; /////this is an important object each layer added in the script fucntion is its own unique object
+            console.log('i:', i)
             console.log('obj:', obj)
-            this._addItem(obj); ////// call the large function
+            this._addItem(obj); ////// call the large function below!!!!!!!!!!!!!!!!!!!!!!!
             overlaysPresent = overlaysPresent || obj.overlay;
             baseLayersPresent = baseLayersPresent || !obj.overlay;
         }
