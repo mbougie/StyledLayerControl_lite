@@ -40,8 +40,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         //// take in the arrays form user input in the script.js and assigns to a "this" object
         /////////////is the "this" object empty initially
         //////////// in this section initialize the this object and append key/value pairs to it??
-        console.log('______________________start____________________________________________', this)
-        console.log("############## initialize #######################################")
+        // console.log('______________________start____________________________________________', this)
+        console.log("############## initialize ##################################################################################")
         var i,j;
         L.Util.setOptions(this, options);
         this._layerControlInputs = [];
@@ -82,7 +82,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             }
         }
 
-        console.log('_________________________end______________________________________', this)
+        // console.log('_________________________end______________________________________', this)
 
     },
 
@@ -94,7 +94,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         ////Should return the container DOM element for the control and add listeners on relevant map events. Called on control.addTo(map).
         //// this method returns an HTMLElement.
 
-        console.log("############## onAdd #######################################")
+        console.log("############## onAdd ####################################################################################")
 
         console.log('this *******************************>>>>>>>>>>>>>>>>>>>>>>>>>>   overlays', this)
         
@@ -112,7 +112,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     },
 
     onRemove: function(map) {
-        console.log("############## onRemove #######################################")
+        console.log("############## onRemove ##################################################################################")
         // map
         //     .off('layeradd', this._onLayerChange)
         //     .off('layerremove', this._onLayerChange);
@@ -123,10 +123,11 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 ////  PRIVATE FUNCTIONS  ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+////// associated with initialize //////////////////////////////////////////////////////////////////////////////////////////////////
     _addLayerToObject: function(layer, name, group, overlay) {
+        console.log('---------------------------  _addLayerToObject:   ------------------------------------------------------')
         ////this function is referenced from the initialize: function(baseLayers, overlays, options)
-        ////build all the layer object in here and label and attach key value to them to destinguish what group they are in
+        ////build the "this" object in here and label and attach key value to them to destinguish what group they are in
 
 
         ////Returns the unique ID of an object, assigning it one if it doesn't have it.
@@ -145,10 +146,11 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         ///////////////// not sure what the rest of this coe is???????????????????
         if (group) {
+            // get the groupId and attach it to the this object
             var groupId = this._groupList.indexOf(group);
             console.log('groupId----pppp', groupId)
 
-            // if not find the group search for the name
+            // if groupID is -1 then do stuff below
             if (groupId === -1) {
                 for (g in this._groupList) {
                     if (this._groupList[g].groupName == group.groupName) {
@@ -159,30 +161,34 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             }
 
             if (groupId === -1) {
+                ////get 
                 groupId = this._groupList.push(group) - 1;
             }
+            ////////////////////////////////////////////////////////////
 
             this._layers[id].group = {
-                name: group.groupName,
+                name: group.groupName, ////get the value from the array in script.js
                 id: groupId,
-                expanded: group.expanded,
-                removable: group.removable
+                expanded: group.expanded  ////get the value from the array in script.js
             };
         }
 
-        if (this.options.autoZIndex && layer.setZIndex) {
-            this._lastZIndex++;
-            layer.setZIndex(this._lastZIndex);
-        }
+
+         
+        // NOT sure if need this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // if (this.options.autoZIndex && layer.setZIndex) {
+        //     this._lastZIndex++;
+        //     layer.setZIndex(this._lastZIndex);
+        // }
     },
 
-
+////// associated with onAdd  //////////////////////////////////////////////////////////////////////////////////////////////////
     _initLayout: function() {
         //////////////////////////////////////////////////////
-        ////creates the _container/_section/_form
+        ////creates the _container/_section/_form html elements
         /////////////////////////////////////////////////////
-
-        console.log('_initLayout -----------9999999999999999999999999999999999999999999999999999this-----------------', this)
+        console.log('---------------------------  _initLayout:   ------------------------------------------------------')
+        // console.log('_initLayout -----------9999999999999999999999999999999999999999999999999999this-----------------', this)
 
 
         ////questions:
@@ -227,21 +233,14 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 
 
+
+
+    /////this is essentially an interator function that loops through the layer array in the "this" object
     _update: function() {
+         console.log('---------------------------  _update:   ------------------------------------------------------')
         if (!this._container) {
             return;
         }
-
-
-        ///////////why have this????
-        // this._baseLayersList.innerHTML = '';
-        // this._overlaysList.innerHTML = '';
-
-
-        ///////////why have this????
-        // this._domGroups.length = 0;
-
-
 
         ///////create an empty 
         this._layerControlInputs = [];
@@ -251,11 +250,16 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             i,
             obj;
 
+
+        ////for each layer in the "this" object run the addItem function.  Note each layer has an associated url with it
         for (i in this._layers) {
             obj = this._layers[i]; /////this is an important object each layer added in the script fucntion is its own unique object
-            console.log('i:', i)
-            console.log('obj:', obj)
-            this._addItem(obj); ////// call the large function below!!!!!!!!!!!!!!!!!!!!!!!
+
+            ////// call the large function below sending the layer to it as an argument0
+            this._addItem(obj); 
+
+
+            /////not sure what these do??????????????
             overlaysPresent = overlaysPresent || obj.overlay;
             baseLayersPresent = baseLayersPresent || !obj.overlay;
         }
@@ -265,10 +269,13 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 
 
-////// last method /////////////////////////////////
-    _addItem: function(obj) {
 
-        console.log('obj---', obj) //// this is the dictionary object created above
+//// theory: this is all the stuff inside of leaflet-control-layers-overlays and leaflet-control-layers-base
+    _addItem: function(obj) {
+        console.log('---------------------------  _addItem:   ------------------------------------------------------')
+        console.log('obj---', obj) //// this is the dictionary object from above
+        
+
         var label = document.createElement('div'),  ///create an empty div element
             input,   //// declare and empty variable to be filled later
             checked = this._map.hasLayer(obj.layer),  ///checked if box is declared true in main script
@@ -283,7 +290,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 
         
-        ////final div object that you interact with //////////////////////////////////
+        ////  menu-item-checkbox (i.e. the last child)  //////////////////////////////////
         if (obj.overlay) {
             console.log(id)
             input = document.createElement('input');
@@ -303,11 +310,15 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 
 
+
+
+        ////explain what this is soon!!!!
+
         ////  _layerControlInputs is an empty array
         this._layerControlInputs.push(input);
         input.layerId = L.Util.stamp(obj.layer);
 
-        ////add layer to map with click!!
+        ////add layer to map with click!!  <---- important line of code
         L.DomEvent.on(input, 'click', this._onInputClick, this);
 
         ////create label object for checkboxes
@@ -316,10 +327,12 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         console.log(input)
 
+
+        /// append the label to the div 
         label.appendChild(input);
         label.appendChild(name);
 
-
+        ////add the object to the approprate container
         if (obj.overlay) {
             container = this._overlaysList;
         } else {
@@ -329,10 +342,14 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         var groupContainer = this._domGroups[obj.group.id];
 
 
-        //////start adding events to the html objects in this code below ?????????????????????
-        if (!groupContainer) {
-            console.log('pre interaction method (I think)')
 
+
+
+
+
+
+        ////// leaflet-control-accordion-layers-1 ////////////////////////////////////////////////
+        if (!groupContainer) {
             groupContainer = document.createElement('div');
             groupContainer.id = 'leaflet-control-accordion-layers-' + obj.group.id;
 
@@ -342,11 +359,10 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             // verify if type is exclusive
             var s_type_exclusive = this.options.exclusive ? ' type="radio" ' : ' type="checkbox" ';
 
-            inputElement = '<input id="ac' + obj.group.id + '" name="accordion-12" class="menu" ' + s_expanded + s_type_exclusive + '/>';
-            inputLabel = '<label for="ac' + obj.group.id + '">' + obj.group.name + '</label>';
-
             article = document.createElement('article');
             article.className = 'ac-large';
+
+            /////append the label above to the the article w/ classname ac-large
             article.appendChild(label);
 
             // process options of ac-large css class - to options.group_maxHeight property
@@ -354,74 +370,23 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
                 article.style.maxHeight = this.options.group_maxHeight;
             }
 
+
+            inputElement = '<input id="ac' + obj.group.id + '" name="accordion-12" class="menu" ' + s_expanded + s_type_exclusive + '/>';
+            inputLabel = '<label for="ac' + obj.group.id + '">' + obj.group.name + '</label>';
+
             groupContainer.innerHTML = inputElement + inputLabel;
+            
+            ///append article above to groupContainer
             groupContainer.appendChild(article);
 
-            // Link to toggle all layers  
-            // if (obj.overlay && this.options.group_togglers.show) {
 
-            //     // Toggler container
-            //     var togglerContainer = L.DomUtil.create('div', 'group-toggle-container', groupContainer);
-
-            //     // Link All
-            //     var linkAll = L.DomUtil.create('a', 'group-toggle-all', togglerContainer);
-            //     linkAll.href = '#';
-            //     linkAll.title = this.options.group_togglers.labelAll;
-            //     linkAll.innerHTML = this.options.group_togglers.labelAll;
-            //     linkAll.setAttribute("data-group-name", obj.group.name);
-
-            //     if (L.Browser.touch) {
-            //         L.DomEvent
-            //             .on(linkAll, 'click', L.DomEvent.stop)
-            //             .on(linkAll, 'click', this._onSelectGroup, this);
-            //     } else {
-            //         L.DomEvent
-            //             .on(linkAll, 'click', L.DomEvent.stop)
-            //             .on(linkAll, 'focus', this._onSelectGroup, this);
-            //     }
-
-            //     // Separator
-            //     var separator = L.DomUtil.create('span', 'group-toggle-divider', togglerContainer);
-            //     separator.innerHTML = ' / ';
-
-            //     // Link none
-            //     var linkNone = L.DomUtil.create('a', 'group-toggle-none', togglerContainer);
-            //     linkNone.href = '#';
-            //     linkNone.title = this.options.group_togglers.labelNone;
-            //     linkNone.innerHTML = this.options.group_togglers.labelNone;
-            //     linkNone.setAttribute("data-group-name", obj.group.name);
-
-            //     if (L.Browser.touch) {
-            //         L.DomEvent
-            //             .on(linkNone, 'click', L.DomEvent.stop)
-            //             .on(linkNone, 'click', this._onUnSelectGroup, this);
-            //     } else {
-            //         L.DomEvent
-            //             .on(linkNone, 'click', L.DomEvent.stop)
-            //             .on(linkNone, 'focus', this._onUnSelectGroup, this);
-            //     }
-
-            //     if (obj.overlay && this.options.group_togglers.show && obj.group.removable) {
-            //         // Separator
-            //         var separator = L.DomUtil.create('span', 'group-toggle-divider', togglerContainer);
-            //         separator.innerHTML = ' / ';
-            //     }
-
-            //     if (obj.group.removable) {
-            //         // Link delete group
-            //         var linkRemove = L.DomUtil.create('a', 'group-toggle-none', togglerContainer);
-            //         linkRemove.href = '#';
-            //         linkRemove.title = this.options.groupDeleteLabel;
-            //         linkRemove.innerHTML = this.options.groupDeleteLabel;
-            //         linkRemove.setAttribute("data-group-name", obj.group.name);
-
-            //     }
-
-            // }
-
+            ////append groupContainer to container
             container.appendChild(groupContainer);
 
             this._domGroups[obj.group.id] = groupContainer;
+
+
+
         } else {
             console.log("dsdsd")
             groupContainer.getElementsByTagName('article')[0].appendChild(label);
