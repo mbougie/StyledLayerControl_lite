@@ -25,7 +25,6 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         collapsed: false,
         position: 'topright', 
         autoZIndex: true,
-        yo: true,
         group_togglers: {
             show: false,
             labelAll: 'All',
@@ -144,6 +143,12 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             };
         }
 
+            ////this makes sure that the overlay layers are ALWAYS on top of the baselayers
+            if (this.options.autoZIndex && layer.setZIndex) {
+            this._lastZIndex++;
+            layer.setZIndex(this._lastZIndex);
+        }
+
     },
 
 
@@ -245,7 +250,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         console.log('obj---', obj) //// this is the dictionary object from above
         
 
-        var label = document.createElement('div'),  ///create an empty div element
+        var groupContainer_small = document.createElement('div'),  ///create an empty div element
             input,   //// declare and empty variable to be filled later
             checked = this._map.hasLayer(obj.layer),  ///checked if box is declared true in main script
             id = 'ac_layer_input_' + obj.layer._leaflet_id, ////create id for div
@@ -257,16 +262,16 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             // console.log(id)
             input = document.createElement('input');
             input.type = 'checkbox';
-            input.className = 'leaflet-control-layers-selector';
+            input.className = 'leaflet-control-layers-selector menu';
             input.defaultChecked = checked;
 
-            label.className = "menu-item-checkbox";
+            groupContainer_small.className = "menu-item-checkbox";
             input.id = id;
         
         ////for radio
         } else {
             input = this._createRadioElement('leaflet-base-layers', checked);
-            label.className = "menu-item-radio";
+            groupContainer_small.className = "menu-item-radio";
             input.id = id;
         }
 
@@ -283,8 +288,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         name.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';
 
         /// append the label to the div 
-        label.appendChild(input);
-        label.appendChild(name);
+        groupContainer_small.appendChild(input);
+        groupContainer_small.appendChild(name);
 
         ////add the object to the approprate container
         if (obj.overlay) {
@@ -310,8 +315,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             // verify if group is expanded
             var s_expanded = obj.group.expanded ? ' checked = "true" ' : '';
 
-            // verify if type is exclusive
-            var s_type_exclusive = this.options.exclusive ? ' type="radio" ' : ' type="checkbox" ';
+            // verify if type is exclusive  <---- don't need this because BOTH are checkboxes now
+            // var s_type_exclusive = this.options.exclusive ? ' type="radio" ' : ' type="checkbox" ';
 
 
 
@@ -326,7 +331,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             //////////////////////////////////////////////////////////////////////////////////////
 
 
-            inputElement = '<input id="ac' + obj.group.id + '" name="accordion-12" class="menu" ' + s_expanded + s_type_exclusive + '/>';
+            // inputElement = '<input id="ac' + obj.group.id + '" name="accordion-12" class="menu" ' + s_expanded + s_type_exclusive + '/>';  <---- don't need this because BOTH are checkboxes now
+            inputElement = '<input id="ac' + obj.group.id + '" name="accordion-12" class="menu" ' + s_expanded + ' type="checkbox"/>';
             inputLabel = '<label class="ddd" for="ac' + obj.group.id + '">' + obj.group.name + '</label>';
 
             groupContainer.innerHTML = inputElement + inputLabel;
@@ -354,35 +360,36 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
            if(obj.group.id===0){
 
-                console.log('obj.group.id===0---------------------->', label)
+                console.log('obj.group.id===0---------------------->', groupContainer_small)
                
-                groupContainer.getElementsByTagName('article')[0].appendChild(label);
+                groupContainer.getElementsByTagName('article')[0].appendChild(groupContainer_small);
 
     
             }
 
             else if(obj.group.id===1){
 
-                console.log('obj.group.id===1------------------------>', label)
+                console.log('obj.group.id===1------------------------>', groupContainer_small)
 
+                // groupContainer_small  //////
+                // inputElement = '<input id="' + input.id + '" name="accordion-3"  class="menu" type="checkbox"/>';
+                inputLabel = '<span class = "square"></span><span class = "info_circle" id="ral"></span><span class = "download"></span>';
+                div_small = document.createElement('div');
+                div_small.id = 'leaflet-control-accordion-layers-3';
+                // div_small.innerHTML = inputElement + inputLabel;
+                div_small.innerHTML = inputLabel;
 
-                groupContainer_small = document.createElement('div');
-                groupContainer_small.id = 'leaflet-control-accordion-layers-3';
-
-
+                ////article_small //////
                 article_small = document.createElement('article');
-
                 article_small.className = 'ac_small';
+                article_small.appendChild(div_small);
 
-                article_small.appendChild(label);
-                inputElement = '<input id="' + input.id + '" name="accordion-3"  class="menu" type="checkbox"/>';
-                inputLabel = '<label for="' + input.id + '">' + obj.name + '</label>';
 
-                groupContainer_small.innerHTML = inputElement + inputLabel;
 
-                ///append article above to groupContainer
                 groupContainer_small.appendChild(article_small);
+                
 
+                //// article  //////
                 article.appendChild(groupContainer_small);
     
             }

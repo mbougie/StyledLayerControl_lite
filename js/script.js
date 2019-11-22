@@ -38,7 +38,7 @@ var map = L.map('map', {
 	maxBounds: bounds
 });
 
-console.log('map------------------------------------', map)
+// console.log('map------------------------------------', map._controlCorners)
 
 
 //// !! layer control (native) !! ////////////////////////
@@ -68,36 +68,36 @@ console.log('map------------------------------------', map)
 //// !! layer control !! //////////////////////////////////
 
 //--- uncomment below ----------------------------------
-// var baseLayers = [
-//                  {
-// 				    groupName : "Base Maps",
-// 				    expanded : false,
-// 					layers    : {
-// 						'Satellite imagery' : satellite,
-// 						"Reference map" : topo_map
-// 					}
-//                 }							
-// ];
+var baseLayers = [
+                 {
+				    groupName : "Base Maps",
+				    expanded : false,
+					layers    : {
+						'Satellite imagery' : satellite,
+						"Reference map" : topo_map
+					}
+                }							
+];
 
-// var overlays = [
-// 				 {
-// 					groupName : "Marginal Land Data",
-// 					expanded : true,
-// 					layers    : { 
-// 						'Low capability land': lsl,
-// 						'Recently abandoned land': ral,
-// 						'Formerly irrigated land': hal
-// 					}	
-//                  }						 
-// ];
+var overlays = [
+				 {
+					groupName : "Marginal Land Data",
+					expanded : true,
+					layers    : { 
+						'Low capability land': lsl,
+						'Recently abandoned land': ral,
+						'Formerly irrigated land': hal
+					}	
+                 }						 
+];
 
 
-// var options = {
-// 	container_width 	: "250px",
-// 	group_maxHeight     : "80px",
-// 	collapsed			: false,
-// 	exclusive       	: true
-// };
+var options = {
+	container_width 	: "250px",
+	group_maxHeight     : "80px",
+	collapsed			: false,
+	exclusive       	: true
+};
 
 
 ////--- comment/uncomment below ----------------------------------
@@ -108,7 +108,7 @@ console.log('map------------------------------------', map)
 
 // //////////// **** control from plugin **** /////////////////////////////////
 
-///// create the control object from the plugin script
+/// create the control object from the plugin script
 var control = L.Control.styledLayerControl(baseLayers, overlays, options);
 console.log('control------------------------------------', control)
 

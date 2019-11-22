@@ -26,7 +26,7 @@
 
     }
 
-    
+
 
     .info h4 {
 
@@ -99,6 +99,26 @@
 
 
 
+.square {
+
+  width: 10px;
+  height: 10px;
+  /*background-color: #CD5C5C;*/
+  margin: 0 auto;
+  position: relative;
+}
+
+.square::after  {
+  color:orange;
+  margin-left: 10px;
+  content: "\f0c8";
+  font-family: FontAwesome;
+  font-size: 15px;
+  position: none;
+}
+
+
+
 
 
 /*--------modifying layers container css to deal with bootstrap confilict-------------*/
@@ -123,4 +143,13 @@
 
 .leaflet-credits-control a {
   color: white !important;
+}
+
+
+
+/*remove the ability of the label of checkbox to activate it*/
+label {
+/*   pointer-events: none;
+   cursor: default;*/
+   font-weight: normal;
 }
