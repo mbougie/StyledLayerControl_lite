@@ -3,6 +3,9 @@
 
 
 L.Control.StyledLayerControl = L.Control.Layers.extend({
+
+    ///Extension methods ---- Every control should extend from L.Control and (re-)implement the following methods.
+    ////Should return the container DOM element for the control and add listeners on relevant map events. Called on control.addTo(map).
     //// these options are not all baked in and have to be created in this script.  ONly baked in one is position for Control!!!
     //// trick is to check the control script if things are not showing up with the control
     /////Note: the extend function is in the leaflet Class section
@@ -15,7 +18,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     // You already know controls - the zoom control in the top left corner, the scale at the bottom left, the layer switcher at the top right. At their core, an L.Control is an HTML Element that is at a static position in the map container.
 
     // To make a control, simply inherit from L.Control and implement onAdd() and onRemove(). These methods work in a similar way to their L.Layer counterparts (they run whenever the control is added to or removed from the map), except that onAdd() must return an instance of HTMLElement representing the control. Adding the element to the map is done automatically, and so is removing it.
-    
+
     ///Note: within this extend function need to stay in the bounds of the 3 functions inside it's sub-functions (cant do console.log outside of functions!)
 
     options: {
@@ -33,24 +36,15 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 
     initialize: function(baseLayers, overlays, options) {
-        //////////////////////////////////////////////////
-        ////Create the 'this' object
-        /////////////////////////////////////////////////////
+        //// take in the arrays form user input in the script.js and assigns to the "this" object
 
-
-        ////calls one private function
-
-
-        //// take in the arrays form user input in the script.js and assigns to a "this" object
-        /////////////is the "this" object empty initially
-        //////////// in this section initialize the this object and append key/value pairs to it??
-        // console.log('______________________start____________________________________________', this)
         console.log("############## initialize ##################################################################################")
         var i,j;
+
+        //// set the options from above /////
         L.Util.setOptions(this, options);
         this._layerControlInputs = [];
         this._layers = [];
-        // console.log('dssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', this._layers)
         this._lastZIndex = 0;
         this._handlingClick = false;
         this._groupList = [];
@@ -58,36 +52,23 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         this._domGroups_small = [];
 
         for (i in baseLayers) {
-            ///for each layer in baselayer get 
-            // console.log('i---------------',i)
-            // console.log('baseLayers[i].layers', baseLayers[i].layers)
+            ///for each layer in baselayers array 
             for (var j in baseLayers[i].layers) {
-                // console.log('this------------baseLayers-----------------------------', this)
-                // console.log('j-----------',j)
-                // console.log('baseLayers[i]-----------',baseLayers[i])   ///// this is the object sent from script.js
-                // console.log('baseLayers[i].layers[j]-----------',baseLayers[i].layers[j])
-                
 
-
-                ////_addLayer: function(layer, name, group, overlay)
+                ////referencing the private method __addLayerToObject: function(layer, name, group, overlay)
                 //// if false attach a radiobutton to div
                 this._addLayerToObject(baseLayers[i].layers[j], j, baseLayers[i], false);
             }
         }
 
         for (i in overlays) {
-            // console.log('i--------- overlays ------',i)
+            ///for each layer in overlays array 
             for (var j in overlays[i].layers) {
-                // console.log('this------------overlays---------------------------', this)
-                // console.log('j------ overlays -----',j)
-
-                ////_addLayer: function(layer, name, group, overlay)
+                ////referencing the private method __addLayerToObject: function(layer, name, group, overlay)
                 //// if true attach a checkbox to div
                 this._addLayerToObject(overlays[i].layers[j], j, overlays[i], true);
             }
         }
-
-        // console.log('_________________________end______________________________________', this)
 
     },
 
@@ -95,32 +76,16 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
     onAdd: function() {
         console.log("############## onAdd ####################################################################################")
-        ///Extension methods ---- Every control should extend from L.Control and (re-)implement the following methods.
-        ////Should return the container DOM element for the control and add listeners on relevant map events. Called on control.addTo(map).
         //// this method returns an HTMLElement.
 
-
-
-        console.log('this *******************************>>>>>>>>>>>>>>>>>>>>>>>>>>   overlays', this)
-        
-        ////this function creates the div elemets and attach class/id to the div
+        ////creates the _container/_section/_form html elements
         this._initLayout();
+        // return this._container;
 
         this._update();
 
-        // map
-        //     .on('layeradd', this._onLayerChange, this)
-        //     .on('layerremove', this._onLayerChange, this)
-        //     .on('zoomend', this._onZoomEnd, this);
-
+        ////returns the _container html element created from the above two methods
         return this._container;
-    },
-
-    onRemove: function(map) {
-        console.log("############## onRemove ##################################################################################")
-        // map
-        //     .off('layeradd', this._onLayerChange)
-        //     .off('layerremove', this._onLayerChange);
     },
 
 
@@ -131,29 +96,30 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 ////// associated with initialize //////////////////////////////////////////////////////////////////////////////////////////////////
     _addLayerToObject: function(layer, name, group, overlay) {
         console.log('---------------------------  _addLayerToObject:   ------------------------------------------------------')
-        ////this function is referenced from the initialize: function(baseLayers, overlays, options)
-        ////build the "this" object in here and label and attach key value to them to destinguish what group they are in
+        ////This function is referenced from initialize: function(baseLayers, overlays, options)
+        ////It builds the "this" object (object of objects????) in here and label and attach key value to them to destinguish what group they are in
 
 
         ////Returns the unique ID of an object, assigning it one if it doesn't have it.
         var id = L.Util.stamp(layer);
 
-        //// add key/values to layer object in the this object
+        //// add key/values to layer objecy in the "this" object
         this._layers[id] = {
             layer: layer,
             name: name,
             overlay: overlay
         };
 
-        // console.log('this._layers', this._layers)
-        // console.log('this._layers[id]', this._layers[id])
+
+        console.log('typeof this._layers:', typeof this._layers )
+        console.log('this:',this)
 
 
-        ///////////////// not sure what the rest of this coe is???????????????????
+        ////add key/values to the group array
         if (group) {
-            // get the groupId and attach it to the this object
+            //// get the groupID value //////////////////////////
             var groupId = this._groupList.indexOf(group);
-            console.log('groupId----pppp', groupId)
+            console.log('groupId---------------', groupId)
 
             // if groupID is -1 then do stuff below
             if (groupId === -1) {
@@ -173,34 +139,33 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
             this._layers[id].group = {
                 name: group.groupName, ////get the value from the array in script.js
-                id: groupId,
+                id: groupId, ///get the value from the code above
                 expanded: group.expanded  ////get the value from the array in script.js
             };
         }
 
-
-         
-        // NOT sure if need this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // if (this.options.autoZIndex && layer.setZIndex) {
-        //     this._lastZIndex++;
-        //     layer.setZIndex(this._lastZIndex);
-        // }
     },
 
-////// associated with onAdd  //////////////////////////////////////////////////////////////////////////////////////////////////
+
     _initLayout: function() {
-        //////////////////////////////////////////////////////
+
+        //// associated public function: onAdd() 
+
+        ////Description:
+        ////Creates an HTML element with tagName, sets its class to className, and optionally appends it to container element.
         ////creates the _container/_section/_form html elements
-        /////////////////////////////////////////////////////
+        ////creates the element hierarchy
+        ////uses the DomUtil.create Utility function to work with the DOM tree.
+          
         console.log('---------------------------  _initLayout:   ------------------------------------------------------')
-        // console.log('_initLayout -----------9999999999999999999999999999999999999999999999999999this-----------------', this)
+
 
 
         ////questions:
         /// 1) -why have to use "this" in this function?
         
-        /////this creates the element arrangement (could do this html as well???)
-        ////////// used the DomUtil.create Utility function to work with the DOM tree.  <----- could also use document.createElement() as well
+        /////this creates the element hierarchy
+        ////////// used the DomUtil.create Utility function to work with the DOM tree.
         ///-----Creates an HTML element with tagName, sets its class to className, and optionally appends it to container element.  
 
         //// ------------   FORM   --------------------------------
@@ -240,7 +205,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 
 
-    /////this is essentially an interator function that loops through the layer array in the "this" object
+    /////this is essentially an "iterator" function that loops through the layer array in the "this" object
     _update: function() {
          console.log('---------------------------  _update:   ------------------------------------------------------')
         if (!this._container) {
@@ -275,7 +240,6 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 
 
-//// theory: this is all the stuff inside of leaflet-control-layers-overlays and leaflet-control-layers-base
     _addItem: function(obj) {
         console.log('---------------------------  _addItem:   ------------------------------------------------------')
         console.log('obj---', obj) //// this is the dictionary object from above
@@ -287,16 +251,6 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             id = 'ac_layer_input_' + obj.layer._leaflet_id, ////create id for div
             container; ///declare and empty variable to be filled later
         
-
-
-        // console.log('checked', checked)
-        // console.log('input', input)
-
-
-
-        
-        ////  menu-item-checkbox (i.e. the last child)  //////////////////////////////////
-        //// create input and label elements
 
         ///for checkbox
         if (obj.overlay) {
@@ -317,12 +271,6 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         }
 
 
-
-
-
-
-        ////explain what this is soon!!!!
-
         ////  _layerControlInputs is an empty array
         this._layerControlInputs.push(input);
         input.layerId = L.Util.stamp(obj.layer);
@@ -333,9 +281,6 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         ////create label object for checkboxes
         var name = document.createElement('label');
         name.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';
-
-        // console.log(input)
-
 
         /// append the label to the div 
         label.appendChild(input);
@@ -353,24 +298,14 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         var groupContainer = this._domGroups[obj.group.id];
        console.log('obj.group.id------------------------>', obj.group.id)
-         // // console.log('groupContainer------------------------>', groupContainer)
+ 
 
-
-        // var groupContainer_small = this._domGroups_small[3];
-        // console.log('groupContainer------------------------qqqq', groupContainer_small)
-
-
-
-        console.log('groupContainer---------  yo  -------->', groupContainer)
+        console.log('groupContainer----------------------------->', groupContainer)
 
         ////// leaflet-control-accordion-layers-1 ////////////////////////////////////////////////
         if (!groupContainer) {
             groupContainer = document.createElement('div');
             groupContainer.id = 'leaflet-control-accordion-layers-' + obj.group.id;
-
-            // groupContainer_small = document.createElement('div');
-            // groupContainer_small.id = 'leaflet-control-accordion-layers-3';
-
 
             // verify if group is expanded
             var s_expanded = obj.group.expanded ? ' checked = "true" ' : '';
@@ -387,20 +322,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             if(obj.group.name === 'Base Maps'){article.className = 'ac-marge';}
             else{article.className = 'ac-large';}
             
-            /////append the label above to the the article w/ classname ac-large
-            // article.appendChild(groupContainer_small);
 
             //////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-            //// might not need ???!!!!
-            // process options of ac-large css class - to options.group_maxHeight property
-            // if (this.options.group_maxHeight) {
-            //     article.style.maxHeight = this.options.group_maxHeight;
-            // }
 
 
             inputElement = '<input id="ac' + obj.group.id + '" name="accordion-12" class="menu" ' + s_expanded + s_type_exclusive + '/>';
@@ -420,46 +343,26 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             this._domGroups[obj.group.id] = groupContainer;
 
 
-            console.log('obj.group.id--------   ???????????   --------->', obj.group.id)
+            console.log('obj.group.id-------------------------------->', obj.group.id)
 
 
 
-}
-            console.log('input.id           sssssssssssssssss', input.id)
+        }
+            console.log('input.id----------------------------------', input.id)
+           
+
+
            if(obj.group.id===0){
 
-                // var groupContainer_small = this._domGroups_small[3];
-                // console.log('obj.group.id===1------------------------>', label)
-
-
-                // groupContainer_small = document.createElement('div');
-                // groupContainer_small.id = 'leaflet-control-accordion-layers-3';
-
-
-                // article_small = document.createElement('article');
-
-                // article_small.className = 'ac_small';
-
-                console.log('obj.group.id===0--------------  hi   -------->', label)
+                console.log('obj.group.id===0---------------------->', label)
                
                 groupContainer.getElementsByTagName('article')[0].appendChild(label);
-                // document.getElementsByClassName('ac-marge')[0].appendChild(label);
-                // document.getElementsByClassName("ac-marge")[0].appendChild(label); 
-                // inputElement = '<input id="' + input.id + '" name="accordion-3"  class="menu" type="checkbox"/>';
-                // inputLabel = '<label for="' + input.id + '">' + obj.name + '</label>';
 
-                // groupContainer.innerHTML = inputElement + inputLabel;
-
-                // ///append article above to groupContainer
-                // groupContainer.appendChild(article);
-
-                // article.appendChild(groupContainer);
     
             }
 
             else if(obj.group.id===1){
 
-                // var groupContainer_small = this._domGroups_small[3];
                 console.log('obj.group.id===1------------------------>', label)
 
 

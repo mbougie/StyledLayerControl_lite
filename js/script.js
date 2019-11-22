@@ -1,3 +1,6 @@
+///// !!! before we begin //////////////////////
+///// You can reference the code on my github repo mbougie/StyledLayerControl_lite on the glue_leaflet_discussion branch
+
 
 //// baselayers
 var satellite = new L.TileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
@@ -63,63 +66,47 @@ console.log('map------------------------------------', map)
 
 
 //// !! layer control !! //////////////////////////////////
-////
+
+//--- uncomment below ----------------------------------
+// var baseLayers = [
+//                  {
+// 				    groupName : "Base Maps",
+// 				    expanded : false,
+// 					layers    : {
+// 						'Satellite imagery' : satellite,
+// 						"Reference map" : topo_map
+// 					}
+//                 }							
+// ];
+
+// var overlays = [
+// 				 {
+// 					groupName : "Marginal Land Data",
+// 					expanded : true,
+// 					layers    : { 
+// 						'Low capability land': lsl,
+// 						'Recently abandoned land': ral,
+// 						'Formerly irrigated land': hal
+// 					}	
+//                  }						 
+// ];
 
 
-////--- uncomment below ----------------------------------
-var baseLayers = [
-                 {
-				    groupName : "Base Maps",
-				    expanded : false,
-					layers    : {
-						'Satellite imagery' : satellite,
-						"Reference map" : topo_map
-					}
-                }							
-];
-
-var overlays = [
-				 {
-					groupName : "Marginal Land Data",
-					expanded : true,
-					layers    : { 
-						'Low capability land': lsl,
-						'Recently abandoned land': ral,
-						'Formerly irrigated land': hal
-					}	
-                 }						 
-];
-
-
-var options = {
-	container_width 	: "250px",
-	group_maxHeight     : "80px",
-	collapsed			: false,
-	exclusive       	: true
-};
+// var options = {
+// 	container_width 	: "250px",
+// 	group_maxHeight     : "80px",
+// 	collapsed			: false,
+// 	exclusive       	: true
+// };
 
 
 ////--- comment/uncomment below ----------------------------------
 
-///// take a look at the map object before control is added
-console.log('map object BEFORE control added to map object ------------------------------------', map)
-console.log('map._controlContainer ------------------------------------', map._controlContainer)
-
-//// **** control from plugin **** /////////////////////////////////
-
-// ///// create the control object from the plugin script
-// var control = L.Control.styledLayerControl(baseLayers, overlays, options);
-// console.log('control------------------------------------', control)
-
-// //add control object to map
-// map.addControl(control);
-// console.log('map object AFTER control added to map object ------------------------------------', map)
+/// take a look at the map object before control is added
+// console.log('map object BEFORE control added to map object ------------------------------------', map)
 // console.log('map._controlContainer ------------------------------------', map._controlContainer)
 
-////////////////////////////////////////////////////////////////
-
-//// **** control from modified plugin **** /////////////////////////////////
-////NOTE: need to change the css and js reference files !!!
+// //////////// **** control from plugin **** /////////////////////////////////
 
 ///// create the control object from the plugin script
 var control = L.Control.styledLayerControl(baseLayers, overlays, options);
@@ -130,6 +117,9 @@ map.addControl(control);
 console.log('map object AFTER control added to map object ------------------------------------', map)
 console.log('map._controlContainer ------------------------------------', map._controlContainer)
 
+
+/////////////// **** control from modified plugin **** /////////////////////////////////
+////NOTE: need to change the css and js reference files !!!
 
 
 
