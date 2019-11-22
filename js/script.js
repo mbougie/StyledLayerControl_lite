@@ -1,9 +1,3 @@
-// var map = new L.Map('map', {
-//     'center': [0, 0],
-//     'zoom': 0
-
-// });
-
 
 //// baselayers
 var satellite = new L.TileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
@@ -11,8 +5,6 @@ var topo_map = new L.TileLayer('https://server.arcgisonline.com/ArcGIS/rest/serv
 var dark_map = new L.TileLayer('https://{s}.baseLayers.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png');
 
 //// layers
-
-
 lsl_url = 'https://storage.googleapis.com/www.mattbougie.com/marginal_lsl_orange/{z}/{x}/{y}'
 var lsl = new L.tileLayer(url_obj.lsl.url);
 
@@ -21,14 +13,6 @@ var ral = new L.tileLayer(url_obj.ral.url);
 
 hal_url = 'https://storage.googleapis.com/www.mattbougie.com/marginal_ral_blue/{z}/{x}/{y}'
 var hal = new L.tileLayer(url_obj.hal.url);
-
-
-
-// console.log(url_obj)
-// for (var key in url_obj) {
-// 	console.log(key);
-//     console.log(url_obj[key]);
-// }
 
 
 
@@ -64,9 +48,12 @@ var overlays = [
 					groupName : "Marginal Land Data",
 					expanded : true,
 					layers    : { 
-						'<span>Low capability land</span><span class = "download"><span class = "info_circle" id="lsl"></span>': lsl,
-						'<span>Recently abandoned land</span><span class = "download"><span class = "info_circle" id="ral"></span>': ral,
-						'<span>Formerly irrigated land</span><span class = "download"><span class = "info_circle" id="ral"></span>': hal
+						// '<span>Low capability land</span><span class = "download"><span class = "info_circle" id="lsl"></span>': lsl,
+						// '<span>Recently abandoned land</span><span class = "download"><span class = "info_circle" id="ral"></span>': ral,
+						// '<span>Formerly irrigated land</span><span class = "download"><span class = "info_circle" id="ral"></span>': hal
+						'Low capability land': lsl,
+						'Recently abandoned land': ral,
+						'Formerly irrigated land': hal
 					}	
                  }						 
 ];
@@ -80,46 +67,41 @@ var options = {
 };
 
 
-var control = L.Control.styledLayerControl(baseLayers, overlays, options);
-map.addControl(control);
-
-
-
-
-
+// var control = L.Control.styledLayerControl(baseLayers, overlays, options);
+// map.addControl(control);
 
 
 ////// new stuff ////////////////////////////////
-var customControl = L.Control.extend({
+// var customControl = L.Control.extend({
  
-  options: {
-    position: 'topleft' 
-    //control position - allowed: 'topleft', 'topright', 'bottomleft', 'bottomright'
-  },
+//   options: {
+//     position: 'topleft' 
+//     //control position - allowed: 'topleft', 'topright', 'bottomleft', 'bottomright'
+//   },
  
-onAdd: function (map) {
-    var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom yo');
-    container.style.backgroundColor = 'white';
-    container.style.width = '35px';
-    container.style.height = '35px';
+// onAdd: function (map) {
+//     var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom yo');
+//     container.style.backgroundColor = 'white';
+//     container.style.width = '35px';
+//     container.style.height = '35px';
  
-    container.onclick = function(){
-    $('#mymodal').modal('show');
-    }
-    return container;
-  }
+//     container.onclick = function(){
+//     $('#mymodal').modal('show');
+//     }
+//     return container;
+//   }
  
-});	
+// });	
 
-map.addControl(new customControl());
+// map.addControl(new customControl());
 
 
-//// create a click event for the icon in layer control
-$(".info_circle, .download").click(function(){
-	///open modal
-   $('#mymodal').modal('show');
+// //// create a click event for the icon in layer control
+// $(".info_circle, .download").click(function(){
+// 	///open modal
+//    $('#mymodal').modal('show');
 
-   	///remove the label click checkbox ability so clicking on icon doesn't check the box.
-   	return false; 
+//    	///remove the label click checkbox ability so clicking on icon doesn't check the box.
+//    	return false; 
    
-});	
+// });	

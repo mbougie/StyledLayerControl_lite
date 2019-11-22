@@ -51,16 +51,17 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         this._handlingClick = false;
         this._groupList = [];
         this._domGroups = [];
+        this._domGroups_small = [];
 
         for (i in baseLayers) {
             ///for each layer in baselayer get 
-            console.log('i---------------',i)
-            console.log('baseLayers[i].layers', baseLayers[i].layers)
+            // console.log('i---------------',i)
+            // console.log('baseLayers[i].layers', baseLayers[i].layers)
             for (var j in baseLayers[i].layers) {
-                console.log('this------------baseLayers-----------------------------', this)
-                console.log('j-----------',j)
-                console.log('baseLayers[i]-----------',baseLayers[i])   ///// this is the object sent from script.js
-                console.log('baseLayers[i].layers[j]-----------',baseLayers[i].layers[j])
+                // console.log('this------------baseLayers-----------------------------', this)
+                // console.log('j-----------',j)
+                // console.log('baseLayers[i]-----------',baseLayers[i])   ///// this is the object sent from script.js
+                // console.log('baseLayers[i].layers[j]-----------',baseLayers[i].layers[j])
                 
 
 
@@ -71,10 +72,10 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         }
 
         for (i in overlays) {
-            console.log('i--------- overlays ------',i)
+            // console.log('i--------- overlays ------',i)
             for (var j in overlays[i].layers) {
-                console.log('this------------overlays---------------------------', this)
-                console.log('j------ overlays -----',j)
+                // console.log('this------------overlays---------------------------', this)
+                // console.log('j------ overlays -----',j)
 
                 ////_addLayer: function(layer, name, group, overlay)
                 //// if true attach a checkbox to div
@@ -140,8 +141,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             overlay: overlay
         };
 
-        console.log('this._layers', this._layers)
-        console.log('this._layers[id]', this._layers[id])
+        // console.log('this._layers', this._layers)
+        // console.log('this._layers[id]', this._layers[id])
 
 
         ///////////////// not sure what the rest of this coe is???????????????????
@@ -220,8 +221,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         var className = 'leaflet-control-layers',
         container = this._container = L.DomUtil.create('div', className);
 
-        console.log('this:', this)
-        console.log('this._container:-------------------------------------------------------------------------------', this._container)
+        // console.log('this:', this)
+        // console.log('this._container:-------------------------------------------------------------------------------', this._container)
 
 
         this._baseLayersList = L.DomUtil.create('div', className + '-base', form);
@@ -284,15 +285,18 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         
 
 
-        console.log('checked', checked)
-        console.log('input', input)
+        // console.log('checked', checked)
+        // console.log('input', input)
 
 
 
         
         ////  menu-item-checkbox (i.e. the last child)  //////////////////////////////////
+        //// create input and label elements
+
+        ///for checkbox
         if (obj.overlay) {
-            console.log(id)
+            // console.log(id)
             input = document.createElement('input');
             input.type = 'checkbox';
             input.className = 'leaflet-control-layers-selector';
@@ -300,7 +304,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
             label.className = "menu-item-checkbox";
             input.id = id;
-        ////add radio buttons to object
+        
+        ////for radio
         } else {
             input = this._createRadioElement('leaflet-base-layers', checked);
             label.className = "menu-item-radio";
@@ -318,14 +323,14 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         this._layerControlInputs.push(input);
         input.layerId = L.Util.stamp(obj.layer);
 
-        ////add layer to map with click!!  <---- important line of code
+        ////engage the checkboxes so they are added to the map graphic  <---- important line of code
         L.DomEvent.on(input, 'click', this._onInputClick, this);
 
         ////create label object for checkboxes
         var name = document.createElement('label');
         name.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';
 
-        console.log(input)
+        // console.log(input)
 
 
         /// append the label to the div 
@@ -339,19 +344,29 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             container = this._baseLayersList;
         }
 
+
+
+
         var groupContainer = this._domGroups[obj.group.id];
+       console.log('obj.group.id------------------------>', obj.group.id)
+         // // console.log('groupContainer------------------------>', groupContainer)
+
+
+        // var groupContainer_small = this._domGroups_small[3];
+        // console.log('groupContainer------------------------qqqq', groupContainer_small)
 
 
 
-
-
-
-
+        console.log('groupContainer---------  yo  -------->', groupContainer)
 
         ////// leaflet-control-accordion-layers-1 ////////////////////////////////////////////////
         if (!groupContainer) {
             groupContainer = document.createElement('div');
             groupContainer.id = 'leaflet-control-accordion-layers-' + obj.group.id;
+
+            // groupContainer_small = document.createElement('div');
+            // groupContainer_small.id = 'leaflet-control-accordion-layers-3';
+
 
             // verify if group is expanded
             var s_expanded = obj.group.expanded ? ' checked = "true" ' : '';
@@ -359,20 +374,33 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             // verify if type is exclusive
             var s_type_exclusive = this.options.exclusive ? ' type="radio" ' : ' type="checkbox" ';
 
+
+
+            /// create article stuff /////////////////////////////////////////////////////////////
+            
             article = document.createElement('article');
-            article.className = 'ac-large';
 
+            if(obj.group.name === 'Base Maps'){article.className = 'ac-marge';}
+            else{article.className = 'ac-large';}
+            
             /////append the label above to the the article w/ classname ac-large
-            article.appendChild(label);
+            // article.appendChild(groupContainer_small);
 
+            //////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+            //// might not need ???!!!!
             // process options of ac-large css class - to options.group_maxHeight property
-            if (this.options.group_maxHeight) {
-                article.style.maxHeight = this.options.group_maxHeight;
-            }
+            // if (this.options.group_maxHeight) {
+            //     article.style.maxHeight = this.options.group_maxHeight;
+            // }
 
 
             inputElement = '<input id="ac' + obj.group.id + '" name="accordion-12" class="menu" ' + s_expanded + s_type_exclusive + '/>';
-            inputLabel = '<label for="ac' + obj.group.id + '">' + obj.group.name + '</label>';
+            inputLabel = '<label class="ddd" for="ac' + obj.group.id + '">' + obj.group.name + '</label>';
 
             groupContainer.innerHTML = inputElement + inputLabel;
             
@@ -383,17 +411,81 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             ////append groupContainer to container
             container.appendChild(groupContainer);
 
+
+            //// NEED THIS
             this._domGroups[obj.group.id] = groupContainer;
 
 
-
-        } else {
-            console.log("dsdsd")
-            groupContainer.getElementsByTagName('article')[0].appendChild(label);
-        }
+            console.log('obj.group.id--------   ???????????   --------->', obj.group.id)
 
 
-        return label;
+
+}
+            console.log('input.id           sssssssssssssssss', input.id)
+           if(obj.group.id===0){
+
+                // var groupContainer_small = this._domGroups_small[3];
+                // console.log('obj.group.id===1------------------------>', label)
+
+
+                // groupContainer_small = document.createElement('div');
+                // groupContainer_small.id = 'leaflet-control-accordion-layers-3';
+
+
+                // article_small = document.createElement('article');
+
+                // article_small.className = 'ac_small';
+
+                console.log('obj.group.id===0--------------  hi   -------->', label)
+               
+                groupContainer.getElementsByTagName('article')[0].appendChild(label);
+                // document.getElementsByClassName('ac-marge')[0].appendChild(label);
+                // document.getElementsByClassName("ac-marge")[0].appendChild(label); 
+                // inputElement = '<input id="' + input.id + '" name="accordion-3"  class="menu" type="checkbox"/>';
+                // inputLabel = '<label for="' + input.id + '">' + obj.name + '</label>';
+
+                // groupContainer.innerHTML = inputElement + inputLabel;
+
+                // ///append article above to groupContainer
+                // groupContainer.appendChild(article);
+
+                // article.appendChild(groupContainer);
+    
+            }
+
+            else if(obj.group.id===1){
+
+                // var groupContainer_small = this._domGroups_small[3];
+                console.log('obj.group.id===1------------------------>', label)
+
+
+                groupContainer_small = document.createElement('div');
+                groupContainer_small.id = 'leaflet-control-accordion-layers-3';
+
+
+                article_small = document.createElement('article');
+
+                article_small.className = 'ac_small';
+
+                article_small.appendChild(label);
+                inputElement = '<input id="' + input.id + '" name="accordion-3"  class="menu" type="checkbox"/>';
+                inputLabel = '<label for="' + input.id + '">' + obj.name + '</label>';
+
+                groupContainer_small.innerHTML = inputElement + inputLabel;
+
+                ///append article above to groupContainer
+                groupContainer_small.appendChild(article_small);
+
+                article.appendChild(groupContainer_small);
+    
+            }
+
+
+
+
+
+
+        // return label;
     },
 
 }); ///////// END OF L.Control.Layers.extend method ////////////////////////////////////////
