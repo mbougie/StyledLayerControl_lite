@@ -2,9 +2,11 @@
 //// baselayers
 var satellite = new L.TileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
 var topo_map = new L.TileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}');
-var dark_map = new L.TileLayer('https://{s}.baseLayers.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png');
 
-//// layers
+
+//// !!------layers------!!
+//// these tiles are created in google earth engine and store in a bucket on google cloud platform
+//// https://console.cloud.google.com/storage/browser/www.mattbougie.com/marginal_lsl_orange/?project=glue-222822
 lsl_url = 'https://storage.googleapis.com/www.mattbougie.com/marginal_lsl_orange/{z}/{x}/{y}'
 var lsl = new L.tileLayer(url_obj.lsl.url);
 
@@ -21,6 +23,9 @@ var bounds = [
     [75, 10]  // Northeast coordinates
 ];
 
+
+/// !!------Instantiates a map object given an instance of a <div> HTML element------!!
+/// take a look at the class = "leaflet-control-container" in the browser
 var map = L.map('map', {
 	center: [36.0902, -95.7129],
 	layers: [topo_map, lsl],
@@ -30,27 +35,54 @@ var map = L.map('map', {
 	maxBounds: bounds
 });
 
+console.log('map------------------------------------', map)
 
+
+//// !! layer control (native) !! ////////////////////////
+//// create a Layers Control and add it to the map
+
+////--- uncomment below ----------------------------------
+// var baseLayers = {
+//     "Reference map" : topo_map
+// };
+
+// var overlays = {
+//     "Low capability land": lsl
+// };
+
+
+// var control = L.control.layers(baseLayers, overlays);
+// console.log('control ------------------------------------', control)
+
+// var control_and_map = L.control.layers(baseLayers, overlays).addTo(map);
+// console.log('control_and_map ------------------------------------', control_and_map)
+
+/////////////////////////////////////////////////////////////
+
+
+
+
+//// !! layer control !! //////////////////////////////////
+////
+
+
+////--- uncomment below ----------------------------------
 var baseLayers = [
                  {
 				    groupName : "Base Maps",
 				    expanded : false,
 					layers    : {
 						'Satellite imagery' : satellite,
-						"Reference map" : topo_map,
-						"Dark map": dark_map
+						"Reference map" : topo_map
 					}
                 }							
 ];
-		
+
 var overlays = [
 				 {
 					groupName : "Marginal Land Data",
 					expanded : true,
 					layers    : { 
-						// '<span>Low capability land</span><span class = "download"><span class = "info_circle" id="lsl"></span>': lsl,
-						// '<span>Recently abandoned land</span><span class = "download"><span class = "info_circle" id="ral"></span>': ral,
-						// '<span>Formerly irrigated land</span><span class = "download"><span class = "info_circle" id="ral"></span>': hal
 						'Low capability land': lsl,
 						'Recently abandoned land': ral,
 						'Formerly irrigated land': hal
@@ -67,41 +99,38 @@ var options = {
 };
 
 
+////--- comment/uncomment below ----------------------------------
+
+///// take a look at the map object before control is added
+console.log('map object BEFORE control added to map object ------------------------------------', map)
+console.log('map._controlContainer ------------------------------------', map._controlContainer)
+
+//// **** control from plugin **** /////////////////////////////////
+
+// ///// create the control object from the plugin script
 // var control = L.Control.styledLayerControl(baseLayers, overlays, options);
+// console.log('control------------------------------------', control)
+
+// //add control object to map
 // map.addControl(control);
+// console.log('map object AFTER control added to map object ------------------------------------', map)
+// console.log('map._controlContainer ------------------------------------', map._controlContainer)
+
+////////////////////////////////////////////////////////////////
+
+//// **** control from modified plugin **** /////////////////////////////////
+////NOTE: need to change the css and js reference files !!!
+
+///// create the control object from the plugin script
+var control = L.Control.styledLayerControl(baseLayers, overlays, options);
+console.log('control------------------------------------', control)
+
+//add control object to map
+map.addControl(control);
+console.log('map object AFTER control added to map object ------------------------------------', map)
+console.log('map._controlContainer ------------------------------------', map._controlContainer)
 
 
-////// new stuff ////////////////////////////////
-// var customControl = L.Control.extend({
- 
-//   options: {
-//     position: 'topleft' 
-//     //control position - allowed: 'topleft', 'topright', 'bottomleft', 'bottomright'
-//   },
- 
-// onAdd: function (map) {
-//     var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom yo');
-//     container.style.backgroundColor = 'white';
-//     container.style.width = '35px';
-//     container.style.height = '35px';
- 
-//     container.onclick = function(){
-//     $('#mymodal').modal('show');
-//     }
-//     return container;
-//   }
- 
-// });	
-
-// map.addControl(new customControl());
 
 
-// //// create a click event for the icon in layer control
-// $(".info_circle, .download").click(function(){
-// 	///open modal
-//    $('#mymodal').modal('show');
 
-//    	///remove the label click checkbox ability so clicking on icon doesn't check the box.
-//    	return false; 
-   
-// });	

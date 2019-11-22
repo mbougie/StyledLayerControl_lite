@@ -1,4 +1,4 @@
-@font-face {
+/*@font-face {
     font-family: BebasNeueRegular;
     src: url(fonts/BebasNeue-webfont.woff);
 }
@@ -16,7 +16,7 @@
 @font-face {
     font-family: Ubuntu-Regular;
     src: url(fonts/Ubuntu-Regular.ttf);
-}
+}*/
 
 
 
@@ -29,7 +29,7 @@
 }
 
 div[id^="leaflet-control-accordion-layers"] > label {
-	font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
+	/*font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;*/
 	padding: 5px 20px;
 	position: relative;
 	z-index: 20;
@@ -77,10 +77,10 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 	height: 24px;
 	right: 13px;
 	top: 7px;
-	background: transparent url(images/arrow_down.png) no-repeat center center;
+	/*background: transparent url(images/arrow_down.png) no-repeat center center;*/
 }
 .ac-container input.menu:checked + div[id^="leaflet-control-accordion-layers"] > label:hover:after{
-	background-image: url(images/arrow_up.png);
+	/*background-image: url(images/arrow_up.png);*/
 }
 .ac-container input.menu{
 	display: none;
@@ -136,13 +136,13 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 }
 
 .menu-item-radio{
-	font-family: 'Ubuntu-Regular', Arial, sans-serif;
+	/*font-family: 'Ubuntu-Regular', Arial, sans-serif;*/
 	font-size: 13px;
 
 }
 
 .menu-item-checkbox{
-	font-family: 'Ubuntu-Regular', Arial, sans-serif;
+	/*font-family: 'Ubuntu-Regular', Arial, sans-serif;*/
 	font-size: 13px;
 
 }
@@ -150,7 +150,7 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 .bt_delete{
     position: relative;
 	float: right;
-	background-image: url(images/delete.png);
+	/*background-image: url(images/delete.png);*/
     background-color: transparent;
     background-repeat: no-repeat;
     background-position: 0px 0px;
@@ -167,6 +167,6 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 
 .leaflet-control-layers:hover {
 	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-	background: #e0e3ec url(images/bgnoise_lg.jpg) repeat top left;
+	/*background: #e0e3ec url(images/bgnoise_lg.jpg) repeat top left;*/
 	border-radius: 5px;
 }

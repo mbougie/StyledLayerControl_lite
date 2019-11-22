@@ -1,3 +1,7 @@
+
+
+
+
 L.Control.StyledLayerControl = L.Control.Layers.extend({
     //// these options are not all baked in and have to be created in this script.  ONly baked in one is position for Control!!!
     //// trick is to check the control script if things are not showing up with the control
@@ -90,12 +94,12 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 
     onAdd: function() {
-
+        console.log("############## onAdd ####################################################################################")
         ///Extension methods ---- Every control should extend from L.Control and (re-)implement the following methods.
         ////Should return the container DOM element for the control and add listeners on relevant map events. Called on control.addTo(map).
         //// this method returns an HTMLElement.
 
-        console.log("############## onAdd ####################################################################################")
+
 
         console.log('this *******************************>>>>>>>>>>>>>>>>>>>>>>>>>>   overlays', this)
         
@@ -480,12 +484,6 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     
             }
 
-
-
-
-
-
-        // return label;
     },
 
 }); ///////// END OF L.Control.Layers.extend method ////////////////////////////////////////

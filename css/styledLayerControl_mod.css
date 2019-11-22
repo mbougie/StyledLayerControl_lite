@@ -3,7 +3,7 @@
 
 /*------------------------------------ style and hover stuff ----------------------------------------------*/
 
-@font-face {
+/*@font-face {
     font-family: BebasNeueRegular;
     src: url(fonts/BebasNeue-webfont.woff);
 }
@@ -21,7 +21,7 @@
 @font-face {
     font-family: Ubuntu-Regular;
     src: url(fonts/Ubuntu-Regular.ttf);
-}
+}*/
 
 
 
@@ -34,7 +34,7 @@
 }*/
 
 div[id^="leaflet-control-accordion-layers"] > label {
-	font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
+	/*font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;*/
 	padding: 5px 20px;
 	position: relative;
 	z-index: 20;
@@ -88,12 +88,12 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 	height: 24px;
 	right: 13px;
 	top: 7px;
-	background: transparent url(images/arrow_down.png) no-repeat center center;
+	/*background: transparent url(images/arrow_down.png) no-repeat center center;*/
 }
 
 
 .ac-container input.menu:checked + div[id^="leaflet-control-accordion-layers"] > label:hover:after{
-	background-image: url(images/arrow_up.png);
+	/*background-image: url(images/arrow_up.png);*/
 }
 .ac-container input.menu{
 	display: none;
