@@ -262,7 +262,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             // console.log(id)
             input = document.createElement('input');
             input.type = 'checkbox';
-            input.className = 'leaflet-control-layers-selector menu';
+            input.className = 'leaflet-control-layers-selector menu form-check-input';
             input.defaultChecked = checked;
 
             groupContainer_small.className = "menu-item-checkbox";

@@ -148,8 +148,44 @@
 
 
 /*remove the ability of the label of checkbox to activate it*/
-label {
-/*   pointer-events: none;
-   cursor: default;*/
+/*label {
+   pointer-events: none;
+   cursor: default;
    font-weight: normal;
+}*/
+
+
+label {
+  color: #383838;
+  font-weight: normal;
+/*  display: block;
+  padding-left: 0px;
+  text-indent: 0px;*/
 }
+input {
+  width: 13px;
+  height: 13px;
+  padding: 0;
+  margin:0;
+  vertical-align:text-bottom;
+  position: relative;
+  top: 0px;
+  overflow: hidden;
+}
+
+
+
+
+/*override leaflet*/
+.leaflet-control-layers-expanded {
+  padding:4px 4px 4px 4px
+}
+
+
+
+
+
+
+
+
+
