@@ -285,7 +285,13 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         ////create label object for checkboxes
         var name = document.createElement('label');
-        name.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';
+
+        ////add download/info icons to the appropriate div element
+        if (obj.group.id === 1){
+        name.innerHTML = '<label for="' + id + '">' + obj.name + '</label><span class = "info_circle" id="ral"></span><span class = "download"></span>';
+        }
+        else{name.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';}
+        
 
         /// append the label to the div 
         groupContainer_small.appendChild(input);
@@ -373,7 +379,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
                 // groupContainer_small  //////
                 // inputElement = '<input id="' + input.id + '" name="accordion-3"  class="menu" type="checkbox"/>';
-                inputLabel = '<span class = "square"></span><span class = "info_circle" id="ral"></span><span class = "download"></span>';
+                inputLabel = '<span class = "square"></span>';
                 div_small = document.createElement('div');
                 div_small.id = 'leaflet-control-accordion-layers-3';
                 // div_small.innerHTML = inputElement + inputLabel;

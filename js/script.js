@@ -5,19 +5,19 @@
 //// baselayers
 var satellite = new L.TileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
 var topo_map = new L.TileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}');
-
+var dark_map = new L.TileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png');
 
 //// !!------layers------!!
 //// these tiles are created in google earth engine and store in a bucket on google cloud platform
 //// https://console.cloud.google.com/storage/browser/www.mattbougie.com/marginal_lsl_orange/?project=glue-222822
 lsl_url = 'https://storage.googleapis.com/www.mattbougie.com/marginal_lsl_orange/{z}/{x}/{y}'
-var lsl = new L.tileLayer(url_obj.lsl.url);
+var lsl = new L.tileLayer(lsl_url);
 
 ral_url = 'https://storage.googleapis.com/www.mattbougie.com/s35_abandonment_final/{z}/{x}/{y}'
-var ral = new L.tileLayer(url_obj.ral.url);
+var ral = new L.tileLayer(ral_url);
 
-hal_url = 'https://storage.googleapis.com/www.mattbougie.com/marginal_ral_blue/{z}/{x}/{y}'
-var hal = new L.tileLayer(url_obj.hal.url);
+hal_url = 'https://storage.googleapis.com/www.agricultureatlas.com/tiles/glbrc/irrigation/test/irrigation2/{z}/{x}/{y}'
+var hal = new L.tileLayer(hal_url);
 
 
 
@@ -74,7 +74,8 @@ var baseLayers = [
 				    expanded : false,
 					layers    : {
 						'Satellite imagery' : satellite,
-						"Reference map" : topo_map
+						"Reference map" : topo_map,
+						"Dark map": dark_map
 					}
                 }							
 ];
