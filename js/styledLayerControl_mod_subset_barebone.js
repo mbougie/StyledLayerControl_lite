@@ -50,6 +50,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         this._domGroups = [];
         this._domGroups_small = [];
 
+
         for (i in baseLayers) {
             ///for each layer in baselayers array 
             for (var j in baseLayers[i].layers) {
@@ -101,15 +102,17 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         ////Returns the unique ID of an object, assigning it one if it doesn't have it.
         var id = L.Util.stamp(layer);
-
+        
+        console.log(id)
         //// add key/values to layer objecy in the "this" object
         this._layers[id] = {
             layer: layer,
             name: name,
+            legend:url_obj[name],
             overlay: overlay
         };
 
-
+        console.log(id)
         console.log('typeof this._layers:', typeof this._layers )
         console.log('this:',this)
 
@@ -379,11 +382,15 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
                 // groupContainer_small  //////
                 // inputElement = '<input id="' + input.id + '" name="accordion-3"  class="menu" type="checkbox"/>';
-                inputLabel = '<span class = "square"></span>';
+                // inputLabel = '<span class = "square"></span>';
                 div_small = document.createElement('div');
                 div_small.id = 'leaflet-control-accordion-layers-3';
-                // div_small.innerHTML = inputElement + inputLabel;
-                div_small.innerHTML = inputLabel;
+                // // div_small.innerHTML = inputElement + inputLabel;
+                // div_small.innerHTML = inputLabel;
+
+                ////NEW always have to use this !!!!
+                console.log('obj---------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', obj)
+                div_small = this._createLegend(obj)
 
                 ////article_small //////
                 article_small = document.createElement('article');
@@ -401,6 +408,76 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             }
 
     },
+
+
+
+_createLegend: function(obj) {
+    ////need to do it this way because json objects are NOT ordered6uu
+    function getColor_irrigation(d) {
+        return d === "-9 decrease" ? "#331a00":
+               d === "-8" ? "#662506":
+               d === "-7" ? "#993404":
+               d === "-6" ? "#cc4c02":
+               d === "-5" ? "#ec7014":
+               d === "-4" ? "#fe9929":
+               d === "-3" ? "#fec44f":
+               d === "-2" ? "#fee391":
+               d === "-1" ? "#fff7bc":
+               d === "0 no change" ? "#fff7fb":
+               d === "1" ? "#ece7f2":
+               d === "2" ? "#d0d1e6":
+               d === "3" ? "#a6bddb":
+               d === "4" ? "#74a9cf":
+               d === "5" ? "#3690c0":
+               d === "6" ? "#0570b0":
+               d === "7" ? "#045a8d":
+               d === "8" ? "#023858":
+               d === "9 increase" ? "#000033":
+                            "purple";
+    }
+
+
+    div = document.createElement('div');
+    div.id = 'leaflet-control-accordion-layers-3';
+
+
+    console.log('this._groupList[1].layers', this._groupList[1].layers)
+    console.log(obj.name)
+    console.log(obj.legend.legend)
+
+
+    if(obj.name==='Low capability land'){
+        inputLabel = '<i style="background:orange"></i>';
+        div.innerHTML = inputLabel;
+        return div;
+        }
+    
+    else if(obj.name==='Recently abandoned land'){
+        inputLabel = '<i style="background:blue"></i>';
+        div.innerHTML = inputLabel;
+        return div;
+        }
+
+    else if(obj.name==='Formerly irrigated land'){
+        labels = ['<strong>Change in irrigation frequency</strong>'];
+
+        for (var i = 0; i < obj.legend.legend.length; i++) {
+
+            console.log('i', i)
+            console.log('url_obj.irrigation.legend[i]', obj.legend.legend[i])
+
+        div.innerHTML += 
+        labels.push(
+            '<i style="background:' + getColor_irrigation(obj.legend.legend[i]) + '"></i> ' +
+        (obj.legend.legend[i] ? obj.legend.legend[i] : '+'));
+
+        }
+        div.innerHTML = labels.join('<br>');
+        return div;
+        }
+    }
+ 
+
 
 }); ///////// END OF L.Control.Layers.extend method ////////////////////////////////////////
 

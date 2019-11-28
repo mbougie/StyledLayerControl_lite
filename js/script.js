@@ -16,7 +16,7 @@ var lsl = new L.tileLayer(lsl_url);
 ral_url = 'https://storage.googleapis.com/www.mattbougie.com/s35_abandonment_final/{z}/{x}/{y}'
 var ral = new L.tileLayer(ral_url);
 
-hal_url = 'https://storage.googleapis.com/www.agricultureatlas.com/tiles/glbrc/irrigation/test/irrigation2/{z}/{x}/{y}'
+hal_url = 'https://storage.googleapis.com/www.agricultureatlas.com/tiles/glbrc/irrigation/formerly_irrigated/{z}/{x}/{y}'
 var hal = new L.tileLayer(hal_url);
 
 
@@ -37,6 +37,9 @@ var map = L.map('map', {
 	maxZoom: 12,
 	maxBounds: bounds
 });
+
+////disable the double click zoom
+map.doubleClickZoom.disable()
 
 // console.log('map------------------------------------', map._controlCorners)
 
