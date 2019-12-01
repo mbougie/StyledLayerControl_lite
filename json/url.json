@@ -98,3 +98,41 @@ url_obj = {
 			]
 		}  
 }
+
+
+
+modal_obj = {
+	"Low capability land": {
+			"modal_title":"Low capability land",
+			"modal_content":"Defined as land that is not cropped as of 2017 and that has a NRCS land capability class rating of 5,6,7, or 8."
+		},
+	"Recently abandoned land": {
+		    "modal_title":"Recently abandoned land",
+			"modal_content":"Defined as land that was removed from production between 2008 and 2016."
+		},
+	"Formerly irrigated land": {
+		    "modal_title":"Formerly irrigated land",
+			"modal_content":"Defined as land that was irrigated for at least one year 2000-2015 but no longer irrigated in 2016 or 2017.",
+			"legend":[
+				"9 increase",
+				"8",
+				"7",
+				"6",
+				"5",
+				"4",
+				"3",
+				"2",
+				"1",
+				"0 no change",
+				"-1",
+				"-2",
+				"-3",
+				"-4",
+				"-5",
+				"-6",
+				"-7",
+				"-8",
+				"-9 decrease"
+			]
+		}
+}

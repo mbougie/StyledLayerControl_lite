@@ -50,7 +50,7 @@
 
 
 
-.yo{
+.help{
   /*background: red !important;*/
   background-image: url('../images/help.svg') !important;
   background-size: 70%;
@@ -106,6 +106,14 @@
   background-color: #CD5C5C;
   margin: 0 auto;
   position: relative;
+}
+
+
+
+
+
+element.style  {
+background-color:red;
 }
 
 
@@ -190,6 +198,13 @@ input {
 .leaflet-control-layers-expanded {
   padding:4px 4px 4px 4px
 }
+
+
+
+
+
+
+
 
 
 

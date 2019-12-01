@@ -128,3 +128,58 @@ console.log('map._controlContainer ------------------------------------', map._c
 
 
 
+
+//// add help button ///////////////////////////////
+
+var customControl = L.Control.extend({
+ 
+  options: {
+    position: 'topleft' 
+  },
+ 
+onAdd: function (map) {
+    var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom help');
+    container.style.backgroundColor = 'white';
+    container.style.width = '35px';
+    container.style.height = '35px';
+
+ 
+    container.onclick = function(){
+    $('#help').modal('show');
+    }
+    return container;
+  }
+ 
+});	
+
+map.addControl(new customControl());
+
+//////////////////////////////////////////////////////
+
+
+
+	
+//// create a click event for the icon in layer control
+$(".info_circle").click(function(){
+
+	///open modal
+   $('#info_circle').modal('show');
+   	document.getElementById("modal_dynamic_title").innerHTML = modal_obj[this.id].modal_title;
+	document.getElementById("modal_dynamic_content").innerHTML = modal_obj[this.id].modal_content;
+   	
+   	// /remove the label click checkbox ability so clicking on icon doesn't check the box.
+   	// return false; 
+   
+});	
+
+
+$(".download").click(function(){
+	///open modal
+   $('#download').modal('show');
+
+   	///remove the label click checkbox ability so clicking on icon doesn't check the box.
+   	return false; 
+   
+});	
+
+

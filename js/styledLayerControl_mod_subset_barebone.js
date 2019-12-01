@@ -248,11 +248,49 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 
 
-    _addItem: function(obj) {
-        console.log('---------------------------  _addItem:   ------------------------------------------------------')
-        console.log('obj---', obj) //// this is the dictionary object from above
+    // _addItem: function(obj) {
+    //     console.log('---------------------------  _addItem:   ------------------------------------------------------')
+    //     console.log('obj---', obj) //// this is the dictionary object from above
         
 
+    //     var groupContainer_small = document.createElement('div'),  ///create an empty div element
+    //         input,   //// declare and empty variable to be filled later
+    //         checked = this._map.hasLayer(obj.layer),  ///checked if box is declared true in main script
+
+    //         id = 'ac_layer_input_' + obj.layer._leaflet_id, ////create id for div
+    //         container; ///declare and empty variable to be filled later
+        
+    //     console.log('checked------yo---------------------yo--------------------',checked)
+        
+
+
+
+    //     ///get rid of this code if I can!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //     if (obj.overlay) {
+    //         input = document.createElement('input');
+    //         input.type = 'checkbox';
+    //         input.className = 'leaflet-control-layers-selector menu form-check-input';
+    //         input.defaultChecked = checked;
+    //         groupContainer_small.className = "menu-item-checkbox";
+    //         input.id = id;
+        
+   
+    //     } else {
+    //         input = this._createRadioElement('leaflet-base-layers', checked);
+    //         groupContainer_small.className = "menu-item-radio";
+    //         input.id = id;
+    //     }
+
+
+    //     ////  _layerControlInputs is an empty array
+    //     this._layerControlInputs.push(input);
+    //     input.layerId = L.Util.stamp(obj.layer);
+
+
+        //////BIG METHOD explore this first!!!!!!!!!!!!!!!!!!!!!!!
+    _addItem: function(obj) {
+
+        console.log('obj---', obj) //// this is the dictionary object created above
         var groupContainer_small = document.createElement('div'),  ///create an empty div element
             input,   //// declare and empty variable to be filled later
             checked = this._map.hasLayer(obj.layer),  ///checked if box is declared true in main script
@@ -260,18 +298,24 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             container; ///declare and empty variable to be filled later
         
 
-        ///for checkbox
+
+        console.log('checked', checked)
+        console.log('input', input)
+
+
+
+        console.log('obj.overlay', obj.overlay)
+        ////add check boxes to object
         if (obj.overlay) {
-            // console.log(id)
+            console.log(id)
             input = document.createElement('input');
             input.type = 'checkbox';
-            input.className = 'leaflet-control-layers-selector menu form-check-input';
+            input.className = 'leaflet-control-layers-selector';
             input.defaultChecked = checked;
 
             groupContainer_small.className = "menu-item-checkbox";
             input.id = id;
-        
-        ////for radio
+        ////add radio buttons to object
         } else {
             input = this._createRadioElement('leaflet-base-layers', checked);
             groupContainer_small.className = "menu-item-radio";
@@ -279,26 +323,63 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         }
 
 
+
+
         ////  _layerControlInputs is an empty array
         this._layerControlInputs.push(input);
         input.layerId = L.Util.stamp(obj.layer);
 
-        ////engage the checkboxes so they are added to the map graphic  <---- important line of code
+        ////add layer to map with click!!
+
+        console.log('input555555555555555555555555555555555555555555555555555',input)
         L.DomEvent.on(input, 'click', this._onInputClick, this);
 
         ////create label object for checkboxes
         var name = document.createElement('label');
+        name.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';
+
+        
+
+        groupContainer_small.appendChild(input);
+        groupContainer_small.appendChild(name);
+
+
+
+        ////keep----describe
+        var s_expanded = checked ? ' checked = "true" ' : '';
 
         ////add download/info icons to the appropriate div element
         if (obj.group.id === 1){
-        name.innerHTML = '<label for="' + id + '">' + obj.name + '</label><span class = "info_circle" id="ral"></span><span class = "download"></span>';
-        }
-        else{name.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';}
-        
+            // inputSpans = '<span class = "info_circle" id="' + obj.name + '"></span><span class = "download"></span>';
+            // inputLabel = '<label for="' + id + '">' + obj.name + '</label>';
+            // groupContainer_small.innerHTML = inputLabel
 
-        /// append the label to the div 
-        groupContainer_small.appendChild(input);
-        groupContainer_small.appendChild(name);
+            // inputElement = '<input id="ac' + obj.group.id + '" name="accordion-12" class="menu" ' + s_expanded + s_type_exclusive + '/>';  <---- don't need this because BOTH are checkboxes now
+            inputElement = '<input id="' + id + '" name="accordion-12" class="leaflet-control-layers-selector menu form-check-input" ' + s_expanded + ' type="checkbox"/>';
+            inputLabel = '<label for="' + id + '">' + obj.name + '</label>';
+
+            groupContainer_small.className = "menu-item-checkbox";
+            groupContainer_small.innerHTML = inputElement + inputLabel;
+        }
+
+        if (obj.group.id === 0){
+            // groupContainer_small.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';
+            inputElement = '<input id="' + id + '" name="leaflet-base-layers" "leaflet-control-layers-selector" ' + s_expanded + ' type="radio"/>';
+            inputLabel = '<label for="' + id + '">' + obj.name + '</label>';
+
+            groupContainer_small.className = "menu-item-radio";
+            groupContainer_small.innerHTML = inputElement + inputLabel;
+        }
+        
+        // console.log('input------------------bottom', input)
+        // /// append the label to the div 
+        // groupContainer_small.appendChild(input);
+        // groupContainer_small.appendChild(name);
+
+
+
+                ////engage the checkboxes so they are added to the map graphic  <---- important line of code
+        L.DomEvent.on(groupContainer_small, 'click', this._onInputClick, this);
 
         ////add the object to the approprate container
         if (obj.overlay) {
@@ -322,6 +403,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             groupContainer.id = 'leaflet-control-accordion-layers-' + obj.group.id;
 
             // verify if group is expanded
+            console.log('obj.group.expanded----------------ooooooooooooooooooooo', obj.group.expanded)
             var s_expanded = obj.group.expanded ? ' checked = "true" ' : '';
 
             // verify if type is exclusive  <---- don't need this because BOTH are checkboxes now
@@ -438,6 +520,7 @@ _createLegend: function(obj) {
 
 
     div = document.createElement('div');
+    div.className = 'legend_squares'
     div.id = 'leaflet-control-accordion-layers-3';
 
 
@@ -447,13 +530,15 @@ _createLegend: function(obj) {
 
 
     if(obj.name==='Low capability land'){
+        // div.className = 'legend_squares'
         inputLabel = '<i style="background:orange"></i>';
         div.innerHTML = inputLabel;
         return div;
         }
     
     else if(obj.name==='Recently abandoned land'){
-        inputLabel = '<i style="background:blue"></i>';
+        // div.className = 'legend_squares'
+        inputLabel = '<i style="background:#045a8d"></i>';
         div.innerHTML = inputLabel;
         return div;
         }
