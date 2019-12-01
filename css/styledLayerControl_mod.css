@@ -162,10 +162,33 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 	transition: height 0.5s ease-in-out, box-shadow 0.1s linear;
 }*/
 
-.div_overlay-large {background-color: orange;}
 
 
-/*.div_overlay-large * {display:none;}*/
+/*.menu-item-checkbox input.menu:checked ~ .group-toggle-container {
+    display: block;
+	line-height: 1em;
+}
+*/
+
+
+/*.menu-item-checkbox input.menu{
+	display: inline;
+}*/
+
+
+input[type=checkbox]:checked + label:before {
+margin-right: 5px;
+  color:#000;
+  content: "\f146";
+  font-family: FontAwesome;
+  font-size: 15px;
+  position: none;
+}
+
+/*.div_overlay-large {background-color: orange;}*/
+
+
+/*.div_overlay-large * {display:none;}
 
 /*.div_overlay-large:hover .menu-item-checkbox {
    display:none;

@@ -283,22 +283,38 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         this._layerControlInputs.push(input);
         input.layerId = L.Util.stamp(obj.layer);
 
+        console.log('input-----------------------------mmmmmmmmmmmmmmmmmmmm', input)
+
         ////engage the checkboxes so they are added to the map graphic  <---- important line of code
         L.DomEvent.on(input, 'click', this._onInputClick, this);
 
-        ////create label object for checkboxes
-        var name = document.createElement('label');
+        
 
         ////add download/info icons to the appropriate div element
         if (obj.group.id === 1){
-        name.innerHTML = '<label for="' + id + '">' + obj.name + '</label><span class = "info_circle" id="ral"></span><span class = "download"></span>';
+        ////create label object for checkboxes
+        var label = document.createElement('label');
+        label.htmlFor = id;
+        label.innerHTML = obj.name
+        // inputSpan = '<span class = "info_circle" id="ral"></span><span class = "download"></span>';
+        // inputLabel = '<label for="' + id + '">' + obj.name + '</label>'
+        
+        // groupContainer_small.innerHTML = inputLabel
+        // console.log('input------------------now----------------', input)
+        groupContainer_small.appendChild(input);
+        // groupContainer_small.innerHTML = inputLabel
+        groupContainer_small.appendChild(label)
         }
-        else{name.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';}
+        else{
+            groupContainer_small.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';
+            groupContainer_small.appendChild(input);
+        }
         
 
         /// append the label to the div 
-        groupContainer_small.appendChild(input);
-        groupContainer_small.appendChild(name);
+
+
+        // groupContainer_small.appendChild(name);
 
         ////add the object to the approprate container
         if (obj.overlay) {
