@@ -40,10 +40,11 @@ div[id^="leaflet-control-accordion-layers"] > label {
 	display: block;
 	height: 20px;
 	cursor: pointer;
-	color: #777;
+	color: #404040;
 	text-shadow: 1px 1px 1px rgba(255,255,255,0.8);
 /*	line-height: 33px;*/
 	font-size: 14px;
+	font-weight: 525;
 	background: #ffffff;
 	background: -moz-linear-gradient(top, #ffffff 1%, #eaeaea 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#ffffff), color-stop(100%,#eaeaea));
@@ -72,8 +73,9 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 .ac-container input.menu:checked + label,
 .ac-container input.menu:checked + label:hover{
 	background: #D5D5D5;
-	color: #003366;
+	color: #003300;
 /*	font-size: 15px;*/
+	font-weight: 525;
 	text-shadow: 0px 1px 1px rgba(255,255,255, 0.6);
 	box-shadow:
 		0px 0px 0px 1px rgba(155,155,155,0.3),
@@ -94,16 +96,16 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 
 
 
-.ac-container input.menu{
+input.menu{
 	display: none;
 }
 
 
 
 /*show the checkboxes*/
-.menu-item-checkbox input.menu{
+/*.menu-item-checkbox input.menu{
 	display: inline;
-}
+}*/
 
 
 /*.menu-item-checkbox input[type="checkbox"] {position:absolute;left:-999px;}
@@ -123,24 +125,57 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 .menu-item-checkbox label input[type="checkbox"]:indeterminate + span:before{content: "\f147";letter-spacing: 6px;}
 */
 
+
+
+
+
 /*NOTE: This was the time consuming css that makes font awesome look dynamic --- had to rewrite the js as well!!!!*/
-.menu-item-checkbox input[type="checkbox"]:checked + label::before {
+.menu-item-radio input[type="radio"] + label::before {
   margin-right: 5px;
-  color:#000;
-  content: "\f146";
+/*  background-color: transparent;*/
+  content: "\f111";
   font-family: FontAwesome;
   font-size: 15px;
   position: none;
+  -webkit-text-stroke: 1px #606060;
+-webkit-text-fill-color: #FFFFFF;
+}
+
+
+.menu-item-radio input[type="radio"]:checked + label::before {
+  margin-right: 5px;
+  color:#000;
+  content: "\f111";
+  font-family: 'FontAwesome';
+  font-size: 15px;
+  position: none;
+  -webkit-text-stroke: 1px #003300;
+  -webkit-text-fill-color: #003300;
 }
 
 
 .menu-item-checkbox input[type="checkbox"] + label::before {
   margin-right: 5px;
   color:#000;
-  content: "\f0fe";
+  content: "\f0c8";
   font-family: FontAwesome;
   font-size: 15px;
   position: none;
+  font-weight:900;
+    -webkit-text-stroke: 1px #606060;
+-webkit-text-fill-color: #FFFFFF;
+}
+
+
+.menu-item-checkbox input[type="checkbox"]:checked + label::before {
+  margin-right: 5px;
+  color:#000;
+  content: "\f14a";
+  font-family: FontAwesome;
+  font-size: 15px;
+  position: none;
+      -webkit-text-stroke: 1px #003300;
+-webkit-text-fill-color: #003300;
 }
 
 
@@ -238,6 +273,7 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 /*	max-height : 50px;*/
 	padding: 5px 5px;
 	overflow-y: auto;
+	/*overflow-y: scroll;*/
     line-height: 18px;
 }
 
@@ -272,8 +308,14 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
     display: inline; 
 }
 
-/*overwrite parent's css*/
+/*overwrite parent's css   ---mine*/
 .menu-item-checkbox label{
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/*overwrite parent's css   ----mine*/
+.menu-item-radio label {
     background-color: transparent !important;
     box-shadow: none !important;
 }

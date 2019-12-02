@@ -16,8 +16,8 @@ var lsl = new L.tileLayer(lsl_url);
 ral_url = 'https://storage.googleapis.com/www.mattbougie.com/s35_abandonment_final/{z}/{x}/{y}'
 var ral = new L.tileLayer(ral_url);
 
-hal_url = 'https://storage.googleapis.com/www.agricultureatlas.com/tiles/glbrc/irrigation/formerly_irrigated/{z}/{x}/{y}'
-var hal = new L.tileLayer(hal_url);
+fil_url = 'https://storage.googleapis.com/www.agricultureatlas.com/tiles/glbrc/irrigation/formerly_irrigated/{z}/{x}/{y}'
+var fil = new L.tileLayer(fil_url);
 
 
 
@@ -90,7 +90,7 @@ var overlays = [
 					layers    : { 
 						'Low capability land': lsl,
 						'Recently abandoned land': ral,
-						'Formerly irrigated land': hal
+						'Formerly irrigated land': fil
 					}	
                  }						 
 ];
@@ -164,11 +164,12 @@ $(".info_circle").click(function(){
 
 	///open modal
    $('#info_circle').modal('show');
+
+
+   console.log('this.id------------------->>>>>>>>>>>>>>>>>>>>>', this.id)
    	document.getElementById("modal_dynamic_title").innerHTML = modal_obj[this.id].modal_title;
 	document.getElementById("modal_dynamic_content").innerHTML = modal_obj[this.id].modal_content;
    	
-   	// /remove the label click checkbox ability so clicking on icon doesn't check the box.
-   	// return false; 
    
 });	
 

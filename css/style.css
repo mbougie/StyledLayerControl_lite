@@ -176,10 +176,12 @@ i {
 
 
 label {
-  color: #383838;
-  font-weight: normal;
+  color: #404040;
+  font-weight: 525;
   margin-left:2px;
 }
+
+
 input {
   width: 13px;
   height: 13px;
