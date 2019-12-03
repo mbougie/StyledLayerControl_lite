@@ -113,6 +113,8 @@ modal_obj = {
 	"Formerly irrigated land": {
 		    "modal_title":"Formerly irrigated land",
 			"modal_content":"Defined as land that was irrigated for at least one year 2000-2015 but no longer irrigated in 2016 or 2017.",
+			"value":[-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+			"hex": ["#331a00","#662506","#993404","#cc4c02","#ec7014","#fe9929","#fec44f","#fee391","#fff7bc","#ffffe5", "#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858","#000033"],
 			"legend":[
 				"9 increase",
 				"8",

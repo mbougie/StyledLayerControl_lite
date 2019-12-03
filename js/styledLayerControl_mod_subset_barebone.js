@@ -530,24 +530,47 @@ _createLegend: function(obj) {
         return div;
         }
 
+    // else if(obj.name==='Formerly irrigated land'){
+    //     labels = ['Change in irrigation frequency <br>2000-2008 to 2009-2017 (years)'];
+
+    //     for (var i = 0; i < obj.legend.legend.length; i++) {
+
+    //         console.log('i', i)
+    //         console.log('url_obj.irrigation.legend[i]', obj.legend.legend[i])
+
+    //     div.innerHTML += 
+    //     labels.push(
+    //         '<i style="background:' + getColor_irrigation(obj.legend.legend[i]) + '"></i> ' +
+    //     (obj.legend.legend[i] ? obj.legend.legend[i] : '+'));
+
+    //     }
+    //     div.innerHTML = labels.join('<br>');
+    //     return div;
+    //     }
     else if(obj.name==='Formerly irrigated land'){
-        labels = ['Change in irrigation frequency <br>2000-2008 to 2009-2017 (years)'];
 
-        for (var i = 0; i < obj.legend.legend.length; i++) {
+         console.log(modal_obj["Formerly irrigated land"].value)
 
-            console.log('i', i)
-            console.log('url_obj.irrigation.legend[i]', obj.legend.legend[i])
+         console.log(d3.schemeRdBu[12])
+// 
+        // var color = d3.scaleOrdinal(['#383867', '#584c77', '#33431e', '#a36629', '#92462f', '#b63e36', '#b74a70', '#946943']);
+        yo = legend({
+          // color: d3.scaleThreshold(modal_obj["Formerly irrigated land"].value, d3.schemeRdBu[9]),
+          color: d3.scaleThreshold(modal_obj["Formerly irrigated land"].value, modal_obj["Formerly irrigated land"].hex),
+          // color:color,
+          title: "Change in irrigation frequency",
+          tickSize: 0
+        })
 
-        div.innerHTML += 
-        labels.push(
-            '<i style="background:' + getColor_irrigation(obj.legend.legend[i]) + '"></i> ' +
-        (obj.legend.legend[i] ? obj.legend.legend[i] : '+'));
+console.log('yo------------------00----------------------',yo)
+        div.appendChild(yo);
+        return div
 
-        }
-        div.innerHTML = labels.join('<br>');
-        return div;
         }
     }
+
+
+
  
 
 
