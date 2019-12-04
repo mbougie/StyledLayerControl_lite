@@ -1,45 +1,17 @@
-@font-face {
-    font-family: BebasNeueRegular;
-    src: url(fonts/BebasNeue-webfont.woff);
-}
 
-@font-face {
-    font-family: Alegreya-Regular;
-    src: url(fonts/Alegreya-Regular.ttf);
-}
-
-@font-face {
-    font-family: Ubuntu-Medium;
-    src: url(fonts/Ubuntu-Medium.ttf);
-}
-
-@font-face {
-    font-family: Ubuntu-Regular;
-    src: url(fonts/Ubuntu-Regular.ttf);
-}
-
-
-
-.ac-container{
-	width: auto;
-	text-align: left;
-	overflow-y: auto;
-	overflow-x: hidden;
-	height: auto;
-}
 
 div[id^="leaflet-control-accordion-layers"] > label {
-	font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
-	padding: 5px 20px;
+	padding: 7px 7px;
 	position: relative;
 	z-index: 20;
 	display: block;
-	height: 30px;
+	height: 20px;
 	cursor: pointer;
-	color: #777;
+	color: #404040;
 	text-shadow: 1px 1px 1px rgba(255,255,255,0.8);
-	line-height: 33px;
-	font-size: 19px;
+/*	line-height: 33px;*/
+	font-size: 14px;
+	font-weight: 525;
 	background: #ffffff;
 	background: -moz-linear-gradient(top, #ffffff 1%, #eaeaea 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#ffffff), color-stop(100%,#eaeaea));
@@ -54,21 +26,30 @@ div[id^="leaflet-control-accordion-layers"] > label {
 		0px 2px 2px rgba(0,0,0,0.1);
     box-sizing: content-box;
     cursor:pointer;
+    /*width: 200px;*/
     width: auto;
     margin: 0;
 }
+
 div[id^="leaflet-control-accordion-layers"] > label:hover {
 	background: #fff;
 }
+
+
+
 .ac-container input.menu:checked + label,
 .ac-container input.menu:checked + label:hover{
-	background: #c6e1ec;
-	color: #3d7489;
+	background: #D5D5D5;
+	color: #003300;
+/*	font-size: 15px;*/
+	font-weight: 525;
 	text-shadow: 0px 1px 1px rgba(255,255,255, 0.6);
 	box-shadow:
 		0px 0px 0px 1px rgba(155,155,155,0.3),
 		0px 2px 2px rgba(0,0,0,0.1);
 }
+
+
 .ac-container div[id^="leaflet-control-accordion-layers"] > label:hover:after,
 .ac-container input.menu:checked + div[id^="leaflet-control-accordion-layers"] > label:hover:after{
 	content: '';
@@ -77,17 +58,82 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 	height: 24px;
 	right: 13px;
 	top: 7px;
-	background: transparent url(images/arrow_down.png) no-repeat center center;
+
 }
-.ac-container input.menu:checked + div[id^="leaflet-control-accordion-layers"] > label:hover:after{
-	background-image: url(images/arrow_up.png);
-}
-.ac-container input.menu{
+
+
+
+input.menu{
 	display: none;
 }
-.ac-container article{
+
+
+
+/*NOTE: This was the time consuming css that makes font awesome look dynamic --- had to rewrite the js as well!!!!*/
+.menu-item-radio input[type="radio"] + label::before {
+  margin-right: 5px;
+/*  background-color: transparent;*/
+  content: "\f111";
+  font-family: FontAwesome;
+  font-size: 15px;
+  position: none;
+  -webkit-text-stroke: 1px #606060;
+-webkit-text-fill-color: #FFFFFF;
+}
+
+
+.menu-item-radio input[type="radio"]:checked + label::before {
+  margin-right: 5px;
+  color:#000;
+  content: "\f111";
+  font-family: 'FontAwesome';
+  font-size: 15px;
+  position: none;
+  -webkit-text-stroke: 1px #003300;
+  -webkit-text-fill-color: #003300;
+}
+
+
+.menu-item-checkbox input[type="checkbox"] + label::before {
+  margin-right: 5px;
+  color:#000;
+  content: "\f0c8";
+  font-family: FontAwesome;
+  font-size: 15px;
+  position: none;
+  font-weight:900;
+    -webkit-text-stroke: 1px #606060;
+-webkit-text-fill-color: #FFFFFF;
+}
+
+
+.menu-item-checkbox input[type="checkbox"]:checked + label::before {
+  margin-right: 5px;
+  color:#000;
+  content: "\f14a";
+  font-family: FontAwesome;
+  font-size: 15px;
+  position: none;
+      -webkit-text-stroke: 1px #003300;
+-webkit-text-fill-color: #003300;
+}
+
+
+/*------------------------------------ END style and hover css END ----------------------------------------------*/
+
+
+
+
+
+
+/*------------------------------------ functional css stuff ----------------------------------------------*/
+
+
+.ac-container article {
 	background: rgba(255, 255, 255, 0.5);
 	margin-top: -1px;
+	margin-left: 5px;
+	margin-right: 5px;
 	overflow: hidden;
 	height: 0px;
     padding: 0px;
@@ -101,72 +147,61 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 	transition: height 0.3s ease-in-out, box-shadow 0.6s linear;
 }
 
-.ac-container input.menu:checked ~ article{
-	-webkit-transition: height 0.5s ease-in-out, box-shadow 0.1s linear;
-	-moz-transition: height 0.5s ease-in-out, box-shadow 0.1s linear;
-	-o-transition: height 0.5s ease-in-out, box-shadow 0.1s linear;
-	-ms-transition: height 0.5s ease-in-out, box-shadow 0.1s linear;
-	transition: height 0.5s ease-in-out, box-shadow 0.1s linear;
+
+
+.div_overlay-large {background-color: orange;}
+
+
+
+.menu-item-checkbox input.menu:checked ~ .ac_small{
+	height: auto;
+/*	max-height : 50px;*/
+	padding-top: 5px;
+	padding-bottom: 5px;
+	overflow-y: auto;
+	/*overflow-y: scroll;*/
+    line-height: 18px;
 }
 
 .ac-container input.menu:checked ~ article.ac-large{
 	height: auto;
-	max-height : 100px;
+/*	max-height : 165px;*/
 	padding: 8px 0;
 	overflow-y: auto;
     line-height: 18px;
 }
 
-.ac-container article label {
-    display: inline;
-    cursor: pointer;
+
+.ac-container input.menu:checked ~ article.ac-marge{
+	height: auto;
+/*	max-height : 165px;*/
+	padding: 8px 0;
+	overflow-y: auto;
+    line-height: 18px;
 }
 
-.ac-container .group-toggle-container {
-    text-align: right;
-    margin-right: 3px;
-    line-height: 0px;
-    display: none;
-    height: 20px;
+
+
+
+.leaflet-control-layers label {
+    display: inline; 
 }
 
-.ac-container input.menu:checked ~ .group-toggle-container {
-    display: block;
-	line-height: 1em;
+/*overwrite parent's css   ---mine*/
+.menu-item-checkbox label{
+    background-color: transparent !important;
+    box-shadow: none !important;
 }
 
-.menu-item-radio{
-	font-family: 'Ubuntu-Regular', Arial, sans-serif;
-	font-size: 13px;
-
+/*overwrite parent's css   ----mine*/
+.menu-item-radio label {
+    background-color: transparent !important;
+    box-shadow: none !important;
 }
 
-.menu-item-checkbox{
-	font-family: 'Ubuntu-Regular', Arial, sans-serif;
-	font-size: 13px;
 
-}
 
-.bt_delete{
-    position: relative;
-	float: right;
-	background-image: url(images/delete.png);
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: 0px 0px;
-    border: none;
-    cursor: pointer;
-    height: 16px;
-    width: 16px;
-    vertical-align: middle;
-}
 
-.leaflet-control-layers-expanded {
-    padding: 5px;
-}
 
-.leaflet-control-layers:hover {
-	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-	background: #e0e3ec url(images/bgnoise_lg.jpg) repeat top left;
-	border-radius: 5px;
-}
+
+

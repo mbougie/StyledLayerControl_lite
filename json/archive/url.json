@@ -104,18 +104,37 @@ url_obj = {
 modal_obj = {
 	"Low capability land": {
 			"modal_title":"Low capability land",
-			"modal_content":"Defined as land that is not cropped as of 2017 and that has a NRCS land capability class rating of 5,6,7, or 8.",
-			"url":"https://storage.googleapis.com/www.mattbougie.com/marginal_lsl_orange/{z}/{x}/{y}"
+			"modal_content":"Defined as land that is not cropped as of 2017 and that has a NRCS land capability class rating of 5,6,7, or 8."
 		},
 	"Recently abandoned land": {
 		    "modal_title":"Recently abandoned land",
-			"modal_content":"Defined as land that was removed from production between 2008 and 2016.",
-			"url":"https://storage.googleapis.com/www.mattbougie.com/s35_abandonment_final/{z}/{x}/{y}"
+			"modal_content":"Defined as land that was removed from production between 2008 and 2016."
 		},
 	"Formerly irrigated land": {
 		    "modal_title":"Formerly irrigated land",
 			"modal_content":"Defined as land that was irrigated for at least one year 2000-2015 but no longer irrigated in 2016 or 2017.",
 			"value":[-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
 			"hex": ["#331a00","#662506","#993404","#cc4c02","#ec7014","#fe9929","#fec44f","#fee391","#fff7bc","#ffffe5", "#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858","#000033"],
+			"legend":[
+				"9 increase",
+				"8",
+				"7",
+				"6",
+				"5",
+				"4",
+				"3",
+				"2",
+				"1",
+				"0 no change",
+				"-1",
+				"-2",
+				"-3",
+				"-4",
+				"-5",
+				"-6",
+				"-7",
+				"-8",
+				"-9 decrease"
+			]
 		}
 }

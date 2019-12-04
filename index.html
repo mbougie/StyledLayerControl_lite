@@ -12,8 +12,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
     <link data-require="bootstrap-css" data-semver="3.3.6" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" />
-	  <link rel="stylesheet" href="css/styledLayerControl_mod.css" />
-    <!-- <link rel="stylesheet" href="css/styledLayerControl.css" /> -->
+	  <link rel="stylesheet" href="css/styledLayerControl.css" />
     <link rel="stylesheet" href="css/style.css" />	
   </head>
 
@@ -25,13 +24,27 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Help</h4>
+            <h3 class="modal-title">About this application</h3>
           </div>
           <div class="modal-body">
-            <!-- <embed src="pdf/RFS synthesis report 5.17.2019.pdf" frameborder="0" width="100%" height="400px"> -->
-            <iframe src="pdf/RFS synthesis report 5.17.2019.pdf" frameborder="0" width="100%" height="400px"></iframe>
+              <p id="helpintro">This interactive web map provides access to geospatial data produced by the DOE Great Lakes Bioenergy Research Center (GLBRC).  The current application and products reflect research work in progress, and all data are preliminary.</p>
+              <h4>Navigation</h4>
+              <p>Click or touch the map to navigate. Zoom capabilities are activated via mouse scroll, touchscreen pinch, or the +/- buttons in the top left corn of the screen.</p>
+              <h4>Background data</h4>
+              <p>Different background imagery is selectable from the “base maps” tab of the control panel box, located in the upper-right corner of the screen. Options include a reference map, satellite imagery, or dark background.</p>
+              <h4>GLBRC datasets</h4>
+              <p>To view an individual GLBRC-produced data layer, select the corresponding checkbox within the “marginal land data” tab of the control panel box in the upper-right corner of the screen.</p>
+            <ul>
+                <li>Information about each dataset and how it was created or defined is available by clicking on the info button [insert icon] to the right of each layer.
+                </li>
+                <li>To download a raster file (.tif) of a specific dataset, use the download button [insert icon] to the right of the layer.</li>
+            </ul>
+            <p id="helpfooter">
+              This application and material is based upon work supported by the Great Lakes Bioenergy Research Center, U.S. Department of Energy, Office of Science, Office of Biological and Environmental Research under Award Number DE-SC0018409.
+            </p>
           </div>
           <div class="modal-footer">
+    
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 <!--             <button type="button" class="btn btn-primary">Confirm</button> -->
           </div>
@@ -44,7 +57,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="modal_dynamic_title"></h4>
+            <h3 class="modal-title" id="modal_dynamic_title"></h3>
           </div>
           <div class="modal-body">
             <p id="modal_dynamic_content"></p>
@@ -64,7 +77,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Download dataset</h4>
+            <h3 class="modal-title">Download dataset</h3>
           </div>
           <div class="modal-body">
             <p>Download the dataset?</p>
@@ -84,7 +97,7 @@
     <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="js/d3_legend.js"></script>
-    <script src="js/styledLayerControl_mod_subset_barebone.js"></script>
+    <script src="js/styledLayerControl.js"></script>
     <script src="json/url.json"></script>
     <script src="js/script.js"></script>
 

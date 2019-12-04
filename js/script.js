@@ -1,7 +1,3 @@
-///// !!! before we begin //////////////////////
-///// You can reference the code on my github repo mbougie/StyledLayerControl_lite on the glue_leaflet_discussion branch
-
-
 //// baselayers
 var satellite = new L.TileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
 var topo_map = new L.TileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}');
@@ -41,36 +37,7 @@ var map = L.map('map', {
 ////disable the double click zoom
 map.doubleClickZoom.disable()
 
-// console.log('map------------------------------------', map._controlCorners)
 
-
-//// !! layer control (native) !! ////////////////////////
-//// create a Layers Control and add it to the map
-
-////--- uncomment below ----------------------------------
-// var baseLayers = {
-//     "Reference map" : topo_map
-// };
-
-// var overlays = {
-//     "Low capability land": lsl
-// };
-
-
-// var control = L.control.layers(baseLayers, overlays);
-// console.log('control ------------------------------------', control)
-
-// var control_and_map = L.control.layers(baseLayers, overlays).addTo(map);
-// console.log('control_and_map ------------------------------------', control_and_map)
-
-/////////////////////////////////////////////////////////////
-
-
-
-
-//// !! layer control !! //////////////////////////////////
-
-//--- uncomment below ----------------------------------
 var baseLayers = [
                  {
 				    groupName : "Base Maps",
@@ -104,14 +71,6 @@ var options = {
 };
 
 
-////--- comment/uncomment below ----------------------------------
-
-/// take a look at the map object before control is added
-// console.log('map object BEFORE control added to map object ------------------------------------', map)
-// console.log('map._controlContainer ------------------------------------', map._controlContainer)
-
-// //////////// **** control from plugin **** /////////////////////////////////
-
 /// create the control object from the plugin script
 var control = L.Control.styledLayerControl(baseLayers, overlays, options);
 console.log('control------------------------------------', control)
@@ -122,15 +81,8 @@ console.log('map object AFTER control added to map object ----------------------
 console.log('map._controlContainer ------------------------------------', map._controlContainer)
 
 
-/////////////// **** control from modified plugin **** /////////////////////////////////
-////NOTE: need to change the css and js reference files !!!
-
-
-
-
 
 //// add help button ///////////////////////////////
-
 var customControl = L.Control.extend({
  
   options: {
@@ -170,7 +122,6 @@ $(".info_circle").click(function(){
    	document.getElementById("modal_dynamic_title").innerHTML = modal_obj[this.id].modal_title;
 	document.getElementById("modal_dynamic_content").innerHTML = modal_obj[this.id].modal_content;
    	
-   
 });	
 
 
@@ -178,8 +129,6 @@ $(".download").click(function(){
 	///open modal
    $('#download').modal('show');
 
-   	///remove the label click checkbox ability so clicking on icon doesn't check the box.
-   	return false; 
    
 });	
 

@@ -1,7 +1,25 @@
 L.Control.StyledLayerControl = L.Control.Layers.extend({
+
+    ///Extension methods ---- Every control should extend from L.Control and (re-)implement the following methods.
+    ////Should return the container DOM element for the control and add listeners on relevant map events. Called on control.addTo(map).
+    //// these options are not all baked in and have to be created in this script.  ONly baked in one is position for Control!!!
+    //// trick is to check the control script if things are not showing up with the control
+    /////Note: the extend function is in the leaflet Class section
+    /////Extends the current class given the properties to be included. Returns a Javascript function that is a class constructor (to be called with new).
+    //// th extend function returns a function
+
+    /////Inheritance You use L.Class.extend to define new classes, but you can use the same method on any class to inherit from it
+
+
+    // You already know controls - the zoom control in the top left corner, the scale at the bottom left, the layer switcher at the top right. At their core, an L.Control is an HTML Element that is at a static position in the map container.
+
+    // To make a control, simply inherit from L.Control and implement onAdd() and onRemove(). These methods work in a similar way to their L.Layer counterparts (they run whenever the control is added to or removed from the map), except that onAdd() must return an instance of HTMLElement representing the control. Adding the element to the map is done automatically, and so is removing it.
+
+    ///Note: within this extend function need to stay in the bounds of the 3 functions inside it's sub-functions (cant do console.log outside of functions!)
+
     options: {
-        collapsed: true,
-        position: 'topright',
+        collapsed: false,
+        position: 'topright', 
         autoZIndex: true,
         group_togglers: {
             show: false,
@@ -11,236 +29,97 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         groupDeleteLabel: 'Delete the group'
     },
 
-    initialize: function(baseLayers, groupedOverlays, options) {
-        var i,
-            j;
-        L.Util.setOptions(this, options);
 
+    initialize: function(baseLayers, overlays, options) {
+        //// take in the arrays form user input in the script.js and assigns to the "this" object
+
+        console.log("############## initialize ##################################################################################")
+        var i,j;
+
+        //// set the options from above /////
+        L.Util.setOptions(this, options);
         this._layerControlInputs = [];
         this._layers = [];
         this._lastZIndex = 0;
         this._handlingClick = false;
         this._groupList = [];
         this._domGroups = [];
+        this._domGroups_small = [];
+
 
         for (i in baseLayers) {
+            ///for each layer in baselayers array 
             for (var j in baseLayers[i].layers) {
-                this._addLayer(baseLayers[i].layers[j], j, baseLayers[i], false);
+
+                ////referencing the private method __addLayerToObject: function(layer, name, group, overlay)
+                //// if false attach a radiobutton to div
+                this._addLayerToObject(baseLayers[i].layers[j], j, baseLayers[i], false);
             }
         }
 
-        for (i in groupedOverlays) {
-            for (var j in groupedOverlays[i].layers) {
-                this._addLayer(groupedOverlays[i].layers[j], j, groupedOverlays[i], true);
+        for (i in overlays) {
+            ///for each layer in overlays array 
+            for (var j in overlays[i].layers) {
+                ////referencing the private method __addLayerToObject: function(layer, name, group, overlay)
+                //// if true attach a checkbox to div
+                this._addLayerToObject(overlays[i].layers[j], j, overlays[i], true);
             }
         }
-
 
     },
 
-    onAdd: function(map) {
+
+
+    onAdd: function() {
+        console.log("############## onAdd ####################################################################################")
+        //// this method returns an HTMLElement.
+
+        ////creates the _container/_section/_form html elements
         this._initLayout();
+        // return this._container;
+
         this._update();
 
-        map
-            .on('layeradd', this._onLayerChange, this)
-            .on('layerremove', this._onLayerChange, this)
-            .on('zoomend', this._onZoomEnd, this);
-
+        ////returns the _container html element created from the above two methods
         return this._container;
     },
 
-    onRemove: function(map) {
-        map
-            .off('layeradd', this._onLayerChange)
-            .off('layerremove', this._onLayerChange);
-    },
 
-    addBaseLayer: function(layer, name, group) {
-        this._addLayer(layer, name, group, false);
-        this._update();
-        return this;
-    },
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////  PRIVATE FUNCTIONS  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    addOverlay: function(layer, name, group) {
-        this._addLayer(layer, name, group, true);
-        this._update();
-        return this;
-    },
+////// associated with initialize //////////////////////////////////////////////////////////////////////////////////////////////////
+    _addLayerToObject: function(layer, name, group, overlay) {
+        console.log('---------------------------  _addLayerToObject:   ------------------------------------------------------')
+        ////This function is referenced from initialize: function(baseLayers, overlays, options)
+        ////It builds the "this" object (object of objects????) in here and label and attach key value to them to destinguish what group they are in
 
-    removeLayer: function(layer) {
+
+        ////Returns the unique ID of an object, assigning it one if it doesn't have it.
         var id = L.Util.stamp(layer);
-        delete this._layers[id];
-        this._update();
-        return this;
-    },
-
-    removeGroup: function(group_Name, del) {
-        for (group in this._groupList) {
-            if (this._groupList[group].groupName == group_Name) {
-                for (layer in this._layers) {
-                    if (this._layers[layer].group && this._layers[layer].group.name == group_Name) {
-                        if (del) {
-                            this._map.removeLayer(this._layers[layer].layer);
-                        }
-                        delete this._layers[layer];
-                    }
-                }
-                delete this._groupList[group];
-                this._update();
-                break;
-            }
-        }
-    },
-
-    removeAllGroups: function(del) {
-        for (group in this._groupList) {
-                for (layer in this._layers) {
-                    if (this._layers[layer].group && this._layers[layer].group.removable) {
-                        if (del) {
-                            this._map.removeLayer(this._layers[layer].layer);
-                        }
-                        delete this._layers[layer];
-                    }
-                }
-                delete this._groupList[group];
-        }
-        this._update();
-    },
-
-    selectLayer: function(layer) {
-        this._map.addLayer(layer);
-        this._update();
-    },
-
-    unSelectLayer: function(layer) {
-        this._map.removeLayer(layer);
-        this._update();
-    },
-
-    selectGroup: function(group_Name) {
-        this.changeGroup(group_Name, true)
-    },
-
-    unSelectGroup: function(group_Name) {
-        this.changeGroup(group_Name, false)
-    },
-
-    changeGroup: function(group_Name, select) {
-        for (group in this._groupList) {
-            if (this._groupList[group].groupName == group_Name) {
-                for (layer in this._layers) {
-                    if (this._layers[layer].group && this._layers[layer].group.name == group_Name) {
-                        if (select) {
-                            this._map.addLayer(this._layers[layer].layer);
-                        } else {
-                            this._map.removeLayer(this._layers[layer].layer);
-                        }
-                    }
-                }
-                break;
-            }
-        }
-        this._update();
-    },
-
-
-    _initLayout: function() {
-        var className = 'leaflet-control-layers',
-            container = this._container = L.DomUtil.create('div', className);
-
-        //Makes this work on IE10 Touch devices by stopping it from firing a mouseout event when the touch is released
-        container.setAttribute('aria-haspopup', true);
-
-        if (!L.Browser.touch) {
-            L.DomEvent.disableClickPropagation(container);
-            L.DomEvent.on(container, 'wheel', L.DomEvent.stopPropagation);
-        } else {
-            L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation);
-        }
-
-        var section = document.createElement('section');
-        section.className = 'ac-container ' + className + '-list';
-
-        var form = this._form = L.DomUtil.create('form');
-
-        section.appendChild(form);
-
-        if (this.options.collapsed) {
-            if (!L.Browser.android) {
-                L.DomEvent
-                    .on(container, 'mouseover', this._expand, this)
-                    .on(container, 'mouseout', this._collapse, this);
-            }
-            var link = this._layersLink = L.DomUtil.create('a', className + '-toggle', container);
-            link.href = '#';
-            link.title = 'Layers';
-
-            if (L.Browser.touch) {
-                L.DomEvent
-                    .on(link, 'click', L.DomEvent.stop)
-                    .on(link, 'click', this._expand, this);
-            } else {
-                L.DomEvent.on(link, 'focus', this._expand, this);
-            }
-
-            this._map.on('click', this._collapse, this);
-            // TODO keyboard accessibility
-
-        } else {
-            this._expand();
-        }
-
-        this._baseLayersList = L.DomUtil.create('div', className + '-base', form);
-        this._overlaysList = L.DomUtil.create('div', className + '-overlays', form);
-
-        container.appendChild(section);
-
-        // process options of ac-container css class - to options.container_width and options.container_maxHeight
-        for (var c = 0; c < (containers = container.getElementsByClassName('ac-container')).length; c++) {
-            if (this.options.container_width) {
-                containers[c].style.width = this.options.container_width;
-            }
-
-            // set the max-height of control to y value of map object
-            this._default_maxHeight = this.options.container_maxHeight ? this.options.container_maxHeight : (this._map.getSize().y - 70);
-            containers[c].style.maxHeight = this._default_maxHeight + "px";
-
-        }
-
-        window.onresize = this._on_resize_window.bind(this);
-
-    },
-
-    _on_resize_window: function() {
-        // listen to resize of screen to reajust de maxHeight of container
-        for (var c = 0; c < containers.length; c++) {
-            // input the new value to height
-            containers[c].style.maxHeight = (window.innerHeight - 90) < this._removePxToInt(this._default_maxHeight) ? (window.innerHeight - 90) + "px" : this._removePxToInt(this._default_maxHeight) + "px";
-        }
-    },
-
-    // remove the px from a css value and convert to a int
-    _removePxToInt: function(value) {
-        if (typeof value === 'string') {
-            return parseInt(value.replace("px", ""));
-        }
-        return value;
-    },
-
-    _addLayer: function(layer, name, group, overlay) {
-        var id = L.Util.stamp(layer);
-
+        
+        console.log(id)
+        //// add key/values to layer objecy in the "this" object
         this._layers[id] = {
             layer: layer,
             name: name,
+            legend:url_obj[name],
             overlay: overlay
         };
 
-        if (group) {
-            var groupId = this._groupList.indexOf(group);
+        console.log(id)
+        console.log('typeof this._layers:', typeof this._layers )
+        console.log('this:',this)
 
-            // if not find the group search for the name
+
+        ////add key/values to the group array
+        if (group) {
+            //// get the groupID value //////////////////////////
+            var groupId = this._groupList.indexOf(group);
+            console.log('groupId---------------', groupId)
+
+            // if groupID is -1 then do stuff below
             if (groupId === -1) {
                 for (g in this._groupList) {
                     if (this._groupList[g].groupName == group.groupName) {
@@ -251,33 +130,82 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             }
 
             if (groupId === -1) {
+                ////get 
                 groupId = this._groupList.push(group) - 1;
             }
+            ////////////////////////////////////////////////////////////
 
             this._layers[id].group = {
-                name: group.groupName,
-                id: groupId,
-                expanded: group.expanded,
-                removable: group.removable
+                name: group.groupName, ////get the value from the array in script.js
+                id: groupId, ///get the value from the code above
+                expanded: group.expanded  ////get the value from the array in script.js
             };
         }
 
-        if (this.options.autoZIndex && layer.setZIndex) {
+            ////this makes sure that the overlay layers are ALWAYS on top of the baselayers
+            if (this.options.autoZIndex && layer.setZIndex) {
             this._lastZIndex++;
             layer.setZIndex(this._lastZIndex);
         }
+
     },
 
+
+    _initLayout: function() {
+
+        //// associated public function: onAdd() 
+
+        ////Description:
+        ////Creates an HTML element with tagName, sets its class to className, and optionally appends it to container element.
+        ////creates the _container/_section/_form html elements
+        ////creates the element hierarchy
+        ////uses the DomUtil.create Utility function to work with the DOM tree.
+          
+        console.log('---------------------------  _initLayout:   ------------------------------------------------------')
+
+        /////this creates the element hierarchy
+        ////////// used the DomUtil.create Utility function to work with the DOM tree.
+        ///-----Creates an HTML element with tagName, sets its class to className, and optionally appends it to container element.  
+
+        //// ------------   FORM   --------------------------------
+        ////append a from element to the "this" object
+        var form = this._form = L.DomUtil.create('form');
+
+
+        
+        //// ------------   SECTION    --------------------------------
+        ////create section element and append form to it then added to the map div using the leaflet method
+        // var section = document.createElement('section');   <------------this does the same as the line below
+        var section = L.DomUtil.create('section');
+        // attach classname to element
+        section.className = 'ac-container ' + className + '-list';
+
+        ///append form to section
+        section.appendChild(form);
+
+
+        //// ------------   CONTAINER    --------------------------------
+        //////Create the box that holds the panels and add it to the map div using the leaflet method
+        var className = 'leaflet-control-layers',
+        container = this._container = L.DomUtil.create('div', className);
+
+
+        this._baseLayersList = L.DomUtil.create('div', className + '-base', form);
+        this._overlaysList = L.DomUtil.create('div', className + '-overlays', form);
+
+        ///append section to container
+        container.appendChild(section);
+    },
+
+
+    /////this is essentially an "iterator" function that loops through the layer array in the "this" object
     _update: function() {
+         console.log('---------------------------  _update:   ------------------------------------------------------')
         if (!this._container) {
             return;
         }
 
-        this._baseLayersList.innerHTML = '';
-        this._overlaysList.innerHTML = '';
-
-        this._domGroups.length = 0;
-
+        ///////create an empty 
         this._layerControlInputs = [];
 
         var baseLayersPresent = false,
@@ -285,280 +213,304 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             i,
             obj;
 
+
+        ////for each layer in the "this" object run the addItem function.  Note each layer has an associated url with it
         for (i in this._layers) {
-            obj = this._layers[i];
-            this._addItem(obj);
+            obj = this._layers[i]; /////this is an important object each layer added in the script fucntion is its own unique object
+
+            ////// call the large function below sending the layer to it as an argument0
+            this._addItem(obj); 
+
+
+            /////not sure what these do??????????????
             overlaysPresent = overlaysPresent || obj.overlay;
             baseLayersPresent = baseLayersPresent || !obj.overlay;
         }
 
     },
 
-    _onLayerChange: function(e) {
-        var obj = this._layers[L.Util.stamp(e.layer)];
-
-        if (!obj) {
-            return;
-        }
-
-        if (!this._handlingClick) {
-            this._update();
-        }
-
-        var type = obj.overlay ?
-            (e.type === 'layeradd' ? 'overlayadd' : 'overlayremove') :
-            (e.type === 'layeradd' ? 'baselayerchange' : null);
-
-        this._checkIfDisabled();
-
-        if (type) {
-            this._map.fire(type, obj);
-        }
-    },
-
-    _onZoomEnd: function(e) {
-        this._checkIfDisabled();
-    },
-
-    _checkIfDisabled: function(layers) {
-        var currentZoom = this._map.getZoom();
-
-        for (layerId in this._layers) {
-            if (this._layers[layerId].layer.options && (this._layers[layerId].layer.options.minZoom || this._layers[layerId].layer.options.maxZoom)) {
-                var el = document.getElementById('ac_layer_input_' + this._layers[layerId].layer._leaflet_id);
-                if (currentZoom < this._layers[layerId].layer.options.minZoom || currentZoom > this._layers[layerId].layer.options.maxZoom) {
-                    el.disabled = 'disabled';
-                } else {
-                    el.disabled = '';
-                }
-            }
-        }
-    },
-
-    // IE7 bugs out if you create a radio dynamically, so you have to do it this hacky way (see http://bit.ly/PqYLBe)
-    _createRadioElement: function(name, checked) {
-
-        var radioHtml = '<input type="radio" class="leaflet-control-layers-selector" name="' + name + '"';
-        if (checked) {
-            radioHtml += ' checked="checked"';
-        }
-        radioHtml += '/>';
-
-        var radioFragment = document.createElement('div');
-        radioFragment.innerHTML = radioHtml;
-
-        return radioFragment.firstChild;
-    },
-
-    _addItem: function(obj) {
-        var label = document.createElement('div'),
-            input,
-            checked = this._map.hasLayer(obj.layer),
-            id = 'ac_layer_input_' + obj.layer._leaflet_id,
-            container;
 
 
+        //////BIG METHOD explore this first!!!!!!!!!!!!!!!!!!!!!!!
+_addItem: function(obj) {
+        console.log('---------------------------  _addItem:   ------------------------------------------------------')
+        console.log('obj---', obj) //// this is the dictionary object from above
+        
+
+        var groupContainer_small = document.createElement('div'),  ///create an empty div element
+            input,   //// declare and empty variable to be filled later
+            checked = this._map.hasLayer(obj.layer),  ///checked if box is declared true in main script
+            id = 'ac_layer_input_' + obj.layer._leaflet_id, ////create id for div
+            container; ///declare and empty variable to be filled later
+        
+
+        ///for checkbox
         if (obj.overlay) {
+            // console.log(id)
             input = document.createElement('input');
             input.type = 'checkbox';
-            input.className = 'leaflet-control-layers-selector';
+            input.className = 'leaflet-control-layers-selector menu form-check-input';
             input.defaultChecked = checked;
 
-            label.className = "menu-item-checkbox";
+            groupContainer_small.className = "menu-item-checkbox";
             input.id = id;
-
+        
+        ////for radio
         } else {
             input = this._createRadioElement('leaflet-base-layers', checked);
-
-            label.className = "menu-item-radio";
+            groupContainer_small.className = "menu-item-radio";
             input.id = id;
         }
 
+
+        ////  _layerControlInputs is an empty array
         this._layerControlInputs.push(input);
         input.layerId = L.Util.stamp(obj.layer);
 
+        console.log('input-----------------------------mmmmmmmmmmmmmmmmmmmm', input)
+
+        ////engage the checkboxes so they are added to the map graphic  <---- important line of code
         L.DomEvent.on(input, 'click', this._onInputClick, this);
 
-        var name = document.createElement('label');
-        name.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';
+        ////add download/info icons to the appropriate div element
+        if (obj.group.id === 1){
+            ////create label object for checkboxes
+            var label = document.createElement('label');
+            label.htmlFor = id;
+            label.innerHTML = obj.name
 
-        label.appendChild(input);
-        label.appendChild(name);
+            var span = document.createElement('span');
+            inputSpan = '<span class = "info_circle" id="' + obj.name + '"></span><span class = "download"></span>';
+            span.innerHTML = inputSpan
+            
 
-        if (obj.layer.StyledLayerControl) {
-
-            // configure the delete button for layers with attribute removable = true
-            if (obj.layer.StyledLayerControl.removable) {
-                var bt_delete = document.createElement("input");
-                bt_delete.type = "button";
-                bt_delete.className = "bt_delete";
-                L.DomEvent.on(bt_delete, 'click', this._onDeleteClick, this);
-                label.appendChild(bt_delete);
-            }
-
-            // configure the visible attribute to layer
-            if (obj.layer.StyledLayerControl.visible) {
-                this._map.addLayer(obj.layer);
-            }
-
+            groupContainer_small.appendChild(input);
+            groupContainer_small.appendChild(label);
+            groupContainer_small.appendChild(span);
         }
+        else{
+            input.className = "menu";
+            var label = document.createElement('label');
+            label.htmlFor = id;
+            label.innerHTML = obj.name
 
 
+
+
+            groupContainer_small.appendChild(input);
+            groupContainer_small.appendChild(label);
+        }
+        
+
+        ////add the object to the approprate container
         if (obj.overlay) {
             container = this._overlaysList;
         } else {
             container = this._baseLayersList;
         }
 
+
+
+
         var groupContainer = this._domGroups[obj.group.id];
+       console.log('obj.group.id------------------------>', obj.group.id)
+ 
 
+        console.log('groupContainer----------------------------->', groupContainer)
+
+        ////// leaflet-control-accordion-layers-1 ////////////////////////////////////////////////
         if (!groupContainer) {
-
             groupContainer = document.createElement('div');
             groupContainer.id = 'leaflet-control-accordion-layers-' + obj.group.id;
 
             // verify if group is expanded
+            console.log('obj.group.expanded----------------ooooooooooooooooooooo', obj.group.expanded)
             var s_expanded = obj.group.expanded ? ' checked = "true" ' : '';
 
-            // verify if type is exclusive
-            var s_type_exclusive = this.options.exclusive ? ' type="radio" ' : ' type="checkbox" ';
+            // verify if type is exclusive  <---- don't need this because BOTH are checkboxes now
+            // var s_type_exclusive = this.options.exclusive ? ' type="radio" ' : ' type="checkbox" ';
 
-            inputElement = '<input id="ac' + obj.group.id + '" name="accordion-1" class="menu" ' + s_expanded + s_type_exclusive + '/>';
-            inputLabel = '<label for="ac' + obj.group.id + '">' + obj.group.name + '</label>';
 
+
+            /// create article stuff /////////////////////////////////////////////////////////////
             article = document.createElement('article');
-            article.className = 'ac-large';
-            article.appendChild(label);
 
-            // process options of ac-large css class - to options.group_maxHeight property
-            if (this.options.group_maxHeight) {
-                article.style.maxHeight = this.options.group_maxHeight;
-            }
+            if(obj.group.name === 'Base Maps'){article.className = 'ac-marge';}
+            else{article.className = 'ac-large';}
+            
+
+            //////////////////////////////////////////////////////////////////////////////////////
+
+
+            // inputElement = '<input id="ac' + obj.group.id + '" name="accordion-12" class="menu" ' + s_expanded + s_type_exclusive + '/>';  <---- don't need this because BOTH are checkboxes now
+            inputElement = '<input id="ac' + obj.group.id + '" name="accordion-12" class="menu" ' + s_expanded + ' type="checkbox"/>';
+            inputLabel = '<label class="ddd" for="ac' + obj.group.id + '">' + obj.group.name + '</label>';
 
             groupContainer.innerHTML = inputElement + inputLabel;
+            
+            ///append article above to groupContainer
             groupContainer.appendChild(article);
 
-            // Link to toggle all layers
-            if (obj.overlay && this.options.group_togglers.show) {
 
-                // Toggler container
-                var togglerContainer = L.DomUtil.create('div', 'group-toggle-container', groupContainer);
-
-                // Link All
-                var linkAll = L.DomUtil.create('a', 'group-toggle-all', togglerContainer);
-                linkAll.href = '#';
-                linkAll.title = this.options.group_togglers.labelAll;
-                linkAll.innerHTML = this.options.group_togglers.labelAll;
-                linkAll.setAttribute("data-group-name", obj.group.name);
-
-                if (L.Browser.touch) {
-                    L.DomEvent
-                        .on(linkAll, 'click', L.DomEvent.stop)
-                        .on(linkAll, 'click', this._onSelectGroup, this);
-                } else {
-                    L.DomEvent
-                        .on(linkAll, 'click', L.DomEvent.stop)
-                        .on(linkAll, 'focus', this._onSelectGroup, this);
-                }
-
-                // Separator
-                var separator = L.DomUtil.create('span', 'group-toggle-divider', togglerContainer);
-                separator.innerHTML = ' / ';
-
-                // Link none
-                var linkNone = L.DomUtil.create('a', 'group-toggle-none', togglerContainer);
-                linkNone.href = '#';
-                linkNone.title = this.options.group_togglers.labelNone;
-                linkNone.innerHTML = this.options.group_togglers.labelNone;
-                linkNone.setAttribute("data-group-name", obj.group.name);
-
-                if (L.Browser.touch) {
-                    L.DomEvent
-                        .on(linkNone, 'click', L.DomEvent.stop)
-                        .on(linkNone, 'click', this._onUnSelectGroup, this);
-                } else {
-                    L.DomEvent
-                        .on(linkNone, 'click', L.DomEvent.stop)
-                        .on(linkNone, 'focus', this._onUnSelectGroup, this);
-                }
-
-                if (obj.overlay && this.options.group_togglers.show && obj.group.removable) {
-                    // Separator
-                    var separator = L.DomUtil.create('span', 'group-toggle-divider', togglerContainer);
-                    separator.innerHTML = ' / ';
-                }
-
-                if (obj.group.removable) {
-                    // Link delete group
-                    var linkRemove = L.DomUtil.create('a', 'group-toggle-none', togglerContainer);
-                    linkRemove.href = '#';
-                    linkRemove.title = this.options.groupDeleteLabel;
-                    linkRemove.innerHTML = this.options.groupDeleteLabel;
-                    linkRemove.setAttribute("data-group-name", obj.group.name);
-
-                    if (L.Browser.touch) {
-                        L.DomEvent
-                            .on(linkRemove, 'click', L.DomEvent.stop)
-                            .on(linkRemove, 'click', this._onRemoveGroup, this);
-                    } else {
-                        L.DomEvent
-                            .on(linkRemove, 'click', L.DomEvent.stop)
-                            .on(linkRemove, 'focus', this._onRemoveGroup, this);
-                    }
-                }
-
-            }
-
+            ////append groupContainer to container
             container.appendChild(groupContainer);
 
+
+            //// NEED THIS
             this._domGroups[obj.group.id] = groupContainer;
-        } else {
-            groupContainer.getElementsByTagName('article')[0].appendChild(label);
+
+
+            console.log('obj.group.id-------------------------------->', obj.group.id)
+
+
+
         }
+            console.log('input.id----------------------------------', input.id)
+           
 
 
-        return label;
+           if(obj.group.id===0){
+
+                console.log('obj.group.id===0---------------------->', groupContainer_small)
+               
+                groupContainer.getElementsByTagName('article')[0].appendChild(groupContainer_small);
+
+    
+            }
+
+            else if(obj.group.id===1){
+
+                console.log('obj.group.id===1------------------------>', groupContainer_small)
+
+                // groupContainer_small  //////
+                div_small = document.createElement('div');
+                div_small.id = 'leaflet-control-accordion-layers-3';
+
+                ////NEW always have to use this !!!!
+                console.log('obj---------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', obj)
+                div_small = this._createLegend(obj)
+
+                ////article_small //////
+                article_small = document.createElement('article');
+                article_small.className = 'ac_small';
+                article_small.appendChild(div_small);
+
+
+
+                groupContainer_small.appendChild(article_small);
+                
+
+                //// article  //////
+                article.appendChild(groupContainer_small);
+    
+            }
+
     },
 
-    _onDeleteClick: function(obj) {
-        var node = obj.target.parentElement.childNodes[0];
-        n_obj = this._layers[node.layerId];
 
-        // verify if obj is a basemap and checked to not remove
-        if (!n_obj.overlay && node.checked) {
-            return false;
-        }
 
-        if (this._map.hasLayer(n_obj.layer)) {
-            this._map.removeLayer(n_obj.layer);
-        }
-
-        obj.target.parentNode.remove();
-
-        return false;
-    },
-
-    _onSelectGroup: function(e) {
-        this.selectGroup(e.target.getAttribute("data-group-name"));
-    },
-
-    _onUnSelectGroup: function(e) {
-        this.unSelectGroup(e.target.getAttribute("data-group-name"));
-    },
-
-    _onRemoveGroup: function(e) {
-        this.removeGroup(e.target.getAttribute("data-group-name"), true);
-    },
-
-    _expand: function() {
-        L.DomUtil.addClass(this._container, 'leaflet-control-layers-expanded');
-    },
-
-    _collapse: function() {
-        this._container.className = this._container.className.replace(' leaflet-control-layers-expanded', '');
+_createLegend: function(obj) {
+    ////need to do it this way because json objects are NOT ordered6uu
+    function getColor_irrigation(d) {
+        return d === "-9 decrease" ? "#331a00":
+               d === "-8" ? "#662506":
+               d === "-7" ? "#993404":
+               d === "-6" ? "#cc4c02":
+               d === "-5" ? "#ec7014":
+               d === "-4" ? "#fe9929":
+               d === "-3" ? "#fec44f":
+               d === "-2" ? "#fee391":
+               d === "-1" ? "#fff7bc":
+               d === "0 no change" ? "#fff7fb":
+               d === "1" ? "#ece7f2":
+               d === "2" ? "#d0d1e6":
+               d === "3" ? "#a6bddb":
+               d === "4" ? "#74a9cf":
+               d === "5" ? "#3690c0":
+               d === "6" ? "#0570b0":
+               d === "7" ? "#045a8d":
+               d === "8" ? "#023858":
+               d === "9 increase" ? "#000033":
+                            "purple";
     }
-});
 
+
+    div = document.createElement('div');
+    div.className = 'legend_squares'
+    div.id = 'leaflet-control-accordion-layers-3';
+
+
+    console.log('this._groupList[1].layers', this._groupList[1].layers)
+    console.log(obj.name)
+    console.log(obj.legend.legend)
+
+
+    if(obj.name==='Low capability land'){
+        // div.className = 'legend_squares'
+        inputLabel = '<i style="background:orange"></i>';
+        div.innerHTML = inputLabel;
+        return div;
+        }
+    
+    else if(obj.name==='Recently abandoned land'){
+        // div.className = 'legend_squares'
+        inputLabel = '<i style="background:#045a8d"></i>';
+        div.innerHTML = inputLabel;
+        return div;
+        }
+
+    ///// vertical legend /////////////////////////////////////////////////////////////
+    // else if(obj.name==='Formerly irrigated land'){
+    //     labels = ['Change in irrigation frequency <br>2000-2008 to 2009-2017 (years)'];
+
+    //     for (var i = 0; i < obj.legend.legend.length; i++) {
+
+    //         console.log('i', i)
+    //         console.log('url_obj.irrigation.legend[i]', obj.legend.legend[i])
+
+    //     div.innerHTML += 
+    //     labels.push(
+    //         '<i style="background:' + getColor_irrigation(obj.legend.legend[i]) + '"></i> ' +
+    //     (obj.legend.legend[i] ? obj.legend.legend[i] : '+'));
+
+    //     }
+    //     div.innerHTML = labels.join('<br>');
+    //     return div;
+    //     }
+
+    ///// horizontal legend ///////////////////////////////////////////////////////////////////
+    else if(obj.name==='Formerly irrigated land'){
+
+         console.log(modal_obj["Formerly irrigated land"].value)
+
+         console.log(d3.schemeRdBu[12])
+// 
+        // var color = d3.scaleOrdinal(['#383867', '#584c77', '#33431e', '#a36629', '#92462f', '#b63e36', '#b74a70', '#946943']);
+        d3_legend = legend({
+          // color: d3.scaleThreshold(modal_obj["Formerly irrigated land"].value, d3.schemeRdBu[9]),
+          color: d3.scaleThreshold(modal_obj["Formerly irrigated land"].value, modal_obj["Formerly irrigated land"].hex),
+          // color:color,
+          title: "  Change in irrigation frequency",
+          tickSize: 0
+        })
+
+        div.appendChild(d3_legend);
+        return div
+
+        }
+    }
+
+
+
+ 
+
+
+}); ///////// END OF L.Control.Layers.extend method ////////////////////////////////////////
+
+
+
+
+//////////////////// call the function???method instantiate the class above?????????????? ///////////////////////////////////////////////
 L.Control.styledLayerControl = function(baseLayers, overlays, options) {
     return new L.Control.StyledLayerControl(baseLayers, overlays, options);
 };

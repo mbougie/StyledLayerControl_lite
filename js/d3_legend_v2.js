@@ -23,6 +23,8 @@ function legend({
   let x;
 
   // Continuous
+
+  console.log('d3 color-------------------------', color)
   if (color.interpolator) {
     x = Object.assign(color.copy()
         .interpolator(d3.interpolateRound(marginLeft, width - marginRight)),
@@ -79,13 +81,15 @@ function legend({
   }
 
   svg.append("g")
-      .attr("transform", `translate(0, ${height - marginBottom})`)
+      // .attr("transform", `translate(0, ${height - marginBottom})`)
+      .attr("transform", `translate(-6, ${height - marginBottom + 2})`)
       .call(d3.axisBottom(x)
         .ticks(ticks, typeof tickFormat === "string" ? tickFormat : undefined)
         .tickFormat(typeof tickFormat === "function" ? tickFormat : undefined)
         .tickSize(tickSize)
         .tickValues(tickValues))
-      .call(g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height))
+      // .call(g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height))
+      .call(g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height + 6))
       .call(g => g.select(".domain").remove())
       .call(g => g.append("text")
         .attr("y", marginTop + marginBottom - height - 6)
